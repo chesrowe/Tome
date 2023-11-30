@@ -1,3 +1,5 @@
+#macro AUTO_DOC_REPO_PATH "" //Path to the repo hosting the docs
+
 global.__autodocFileArray = [];
 
 /**
@@ -6,7 +8,7 @@ global.__autodocFileArray = [];
  * @param {string} filepath Path to the GML file.
  * @returns {struct} Struct containing the markdown text, title, and category
  */
-function __autodoc_generate(filepath) {
+function __autodoc_parse_file(filepath) {
     var _file = file_text_open_read(filepath);
 	var _markdown = "";
 	

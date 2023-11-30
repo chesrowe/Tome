@@ -5,7 +5,6 @@
 /// - one
 /// - two
 /// - three
-/// < sdfasdf
 
 /// @func tester(x, y)
 /// @desc This is a description of the function.
