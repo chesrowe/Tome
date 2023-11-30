@@ -2,7 +2,10 @@
 /// @title Test system
 /// @text A description of the system
 ///
-/// Blah blah blah blah
+/// - one
+/// - two
+/// - three
+/// < sdfasdf
 
 /// @func tester(x, y)
 /// @desc This is a description of the function.
