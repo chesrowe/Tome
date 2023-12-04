@@ -1,4 +1,5 @@
 # Tome
+![Tome-logo](https://i.imgur.com/UEey42D.png)
 Tome is a GameMaker library for Generating a documentation site directly from your GameMaker project by parsing jsdoc comments from .GML(or any other) files. 
 
 
