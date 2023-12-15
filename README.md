@@ -13,6 +13,6 @@
 
 - Created and tested with GameMaker LTS 2022
 
-Get started by reading the [documentation]()
+<p align="center" > Get started by reading the [documentation]() </p>
 
 
