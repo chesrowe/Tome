@@ -13,6 +13,6 @@
 
 - Created and tested with GameMaker LTS 2022
 
-<p align="center" > Get started by reading the [documentation]() </p>
+<p align="center" > Get started by reading the [documentation](www.catsclysmicstudios.com/tome) </p>
 
 
