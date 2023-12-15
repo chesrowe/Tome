@@ -3,6 +3,11 @@
 
 <p align="center">A GameMaker library for Generating a documentation site directly from your GameMaker project. </p>
 
+- Keep your project's code documented automatically using a simple set of functions.
+
+- Easy to setup
+
+- Customizable and flexible
 
 - This library is powered by [Docsify](https://docsify.js.org/#/)
 
