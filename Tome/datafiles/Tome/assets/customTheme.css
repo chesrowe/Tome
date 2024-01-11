@@ -1,0 +1,37 @@
+/*:root { 
+    --theme-color: #d51246; 
+    --main-font-size: 16px; 
+    --primary-color: #42b983;
+    --text-color: #abb7a8;
+    background-color: #161715;
+  } 
+
+/* Normal non-header text */
+/*.content p {
+    font-size: var(--main-font-size);
+    color: var(--text-color);
+}
+
+.sidebar {
+    background-color: #b92c2c; /* Light grey background */
+   /* color: #da1c1c; /* Dark grey text */
+ /*   font-family: 'Arial', sans-serif;
+  }
+*/
+.content h1 {
+    font-size: 3.5em;
+    /*color: #2c3e50; */
+    margin-bottom: 0.5em;
+}
+
+.content h2 {
+    font-size: 2.0em;
+    /*color: rgb(170, 228, 35); */
+    margin-bottom: 0.5em;
+}
+
+
+/*
+These appear to do nothing 
+
+*/

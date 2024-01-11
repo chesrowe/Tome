@@ -1,0 +1,16 @@
+/// @title Configuration
+/// @category API Reference
+
+The following macros are used for configuring your site's repo, as well as a few general settings. These macros are located in the script `tomeConfig`.
+
+## Macros
+
+| Macro Name                     | Purpose                                                                                                                                    |
+| ------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------ |
+| TOME_ENABLED                   | Whether or not to enable the system to run when your project is ran.                                                                       |
+| TOME_GITHUB_AUTH_TOKEN         | Personal access token obtained from github.com/settings/tokens                                                                             |
+| TOME_GITHUB_USERNAME           | Your GitHub USERNAME                                                                                                                       |
+| TOME_GITHUB_REPO_NAME          | The name of the repo where the generated docs will be committed and pushed                                                                 |
+| TOME_GITHUB_REPO_BRANCH        | The branch of the repo where the generated docs will be pushed                                                                             |
+| TOME_GITHUB_REPO_DOC_DIRECTORY | The directory within your Github repo where your docs will be pushed (In the case you don't want your doc folder at the root of your repo) |
+| TOME_VERBOSE                   | Show extended debug information in the console                                                                                                                                                                                                                                   |
