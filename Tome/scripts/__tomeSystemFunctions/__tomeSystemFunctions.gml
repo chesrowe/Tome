@@ -422,6 +422,7 @@ function __tome_parse_script(_filepath) {
 					case "@function":
 					case "@func":
 						_tableStarted = false;
+						_inTable = false;
 						_foundReturn = false;
 						_markdown += string("\n## `{0}`", _tagContent);		
 						_inTextBlock = false;
@@ -446,6 +447,7 @@ function __tome_parse_script(_filepath) {
 						_markdown += string("\n### `.{0}` → {rv}\n" , _tagContent);		
 						_inTextBlock = false;
 						_tableStarted = false;
+						_inTable = false;
 						_inFunc = true;
 					break;
 					
@@ -462,12 +464,16 @@ function __tome_parse_script(_filepath) {
 						}
 						
 						_tableStarted = false;
+						_inTable = false;
 					break; 
 					
 					case "@text":
 						_markdown += _tagContent + "\n";			
 						_inTextBlock = true;
 						_inCodeBlock = false;
+						_tableStarted = false;
+						_inDesc = false;
+						_inTable = false;
 						_tableStarted = false;
 					break;
 					
@@ -478,6 +484,7 @@ function __tome_parse_script(_filepath) {
 						_inCodeBlock = true;
 						_tableStarted = false;
 						_inTextBlock = false;
+						_inTable = false;
 					break;
 					
 					case "@param":
@@ -489,6 +496,7 @@ function __tome_parse_script(_filepath) {
 								_markdown += "\n| Parameter | Datatype  | Purpose |\n";
 								_markdown += "|-----------|-----------|---------|\n";				
 								_tableStarted = true;
+								_inTable = true;
 							}
 						
 							_inDesc = false;
@@ -525,11 +533,13 @@ function __tome_parse_script(_filepath) {
 							if (_returnInfo != ""){
 								_markdown += string("\n**Returns:** {0}\n", _returnInfo);
 							}
+							
+							_inTable = false;
 						}
 					break;
 					
 					case "@category":
-						_category = _splitString[1];
+						_category = _tagContent;
 					break;
 				}
 			}else{
@@ -545,6 +555,10 @@ function __tome_parse_script(_filepath) {
 				if (_inCodeBlock){
 					_markdown += _lineString;	
 				}
+				
+				if (_inTable){
+					_markdown += "\n";	
+				}
 			}
 		}else{
 			if (!_foundReturn){
@@ -553,6 +567,10 @@ function __tome_parse_script(_filepath) {
 			
 			if (_inCodeBlock){
 				_markdown += "```\n";	
+			}
+			
+			if (_inTable){
+				_markdown += "\n";	
 			}
 			
 			_inCodeBlock = false;
@@ -593,9 +611,10 @@ function __tome_parse_markdown(_filePath){
 	}
 	
 	while (!file_text_eof(_file)) {
-		var _lineString = string_trim(file_text_readln(_file));
+		var _lineString = file_text_readln(_file);
 		
 		if (string_starts_with(_lineString, "///")){
+			_lineString = string_trim(_lineString);
 			_lineString = string_replace(_lineString, "///", "");
 			
 			if (string_count("@", _lineString) > 0){
@@ -615,7 +634,7 @@ function __tome_parse_markdown(_filePath){
 				}
 			}
 		}else{
-			_markdown += _lineString + "\n";	
+			_markdown += _lineString;	
 		}
 	}
 	
@@ -732,6 +751,8 @@ function __tome_file_update_config(_propertyName, _propertyValue){
 
 #endregion
 
+#region __tome_string_trim_starting_whitespace(_string, _maxNumberOfWhitespace)
+
 /// @desc Trims the starting whitespace of a string leaving a given amount of it 
 /// @param {string} string The string to trim
 /// @param {real} maxNumberOfWhitespace The maximum number of whitespace characters to leave
@@ -756,4 +777,7 @@ function __tome_string_trim_starting_whitespace(_string, _maxNumberOfWhitespace)
 	
 	return string_copy(_string, clamp(_stringInfoStruct.positionOfFirstNonWhitespaceCharacter - _maxNumberOfWhitespace, 1, string_length(_string)), string_length(_string));
 }
+
+#endregion
+
 

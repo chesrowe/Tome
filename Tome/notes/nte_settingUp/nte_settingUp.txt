@@ -1,0 +1,6 @@
+/// @title Setting Up
+/// @category Getting Started
+
+?> This guide assumes you now the basics of how Github repos work
+
+## Creating a Github personal access token

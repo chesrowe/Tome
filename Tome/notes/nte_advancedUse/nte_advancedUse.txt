@@ -3,14 +3,14 @@
 
 ## Live Reloading
 GitHub pages can take a few minutes to update your site most times. To see a preview of your site immediately, you can use Docsify's live reloading feature. The steps to setting that up are as follows.
-1) Clone your site's repo locally using GitHub Desktop 
-2) Install [NodeJS](https://nodejs.org/en/download) 
-3) Open command line and follow this [guide](https://docsify.js.org/#/quickstart) 
-     **TLDR**
-    1) Open the command prompt and type the following: `npm i docsify-cli -g` and press enter
-    2) Use the `cd` command to point the command line to your repo's directory like: `cd c:/users/username/GitHub/repo`
-    3) Use the command `docsify serve` to start your site running on a local server.
-    4) Now, open your browser and type in the address bar: `http://localhost:3000`. Anytime your site is updated, the changes will instantly appear here as long as the command prompt is left open.
+1. Clone your site's repo locally using GitHub Desktop 
+2. Install [NodeJS](https://nodejs.org/en/download) 
+3. Open command line and follow this [guide](https://docsify.js.org/#/quickstart)
+    <br>**TLDR**
+    1. Open the command prompt and type the following: `npm i docsify-cli -g` and press enter
+    2. Use the `cd` command to point the command line to your repo's directory like: `cd c:/users/username/GitHub/repo`
+    3. Use the command `docsify serve` to start your site running on a local server.
+    4. Now, open your browser and type in the address bar: `http://localhost:3000`. Anytime your site is updated, the changes will instantly appear here as long as the command prompt is left open.
 
 ?> Don't forget to pull your changes from GitHub each time you run your project or the changes will not show up locally!
 
