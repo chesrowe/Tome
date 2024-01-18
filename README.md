@@ -14,7 +14,7 @@
 - Created and tested with GameMaker LTS 2022
 
 <p align="center" > 
-  Get started by reading the <a href="www.catsclysmicstudios.com/Tome-Docs"> documentation </a>
+  Get started by reading the <a href="https://www.catsclysmicstudios.com/Tome-Docs"> documentation </a>
 </p>
 
 
