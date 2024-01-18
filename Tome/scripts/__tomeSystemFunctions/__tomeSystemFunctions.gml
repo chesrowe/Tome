@@ -600,6 +600,8 @@ function __tome_parse_markdown(_filePath){
 	var _markdown = "";
 	var _category = "";
 	var _title = "";
+	var _titleFound = false;
+	var _categoryFound = false;
 	
 	if (_file == -1) {
 		__tomeTrace("Failed to open file: " + _filePath);
@@ -611,11 +613,11 @@ function __tome_parse_markdown(_filePath){
 	}
 	
 	while (!file_text_eof(_file)) {
-		var _lineString = file_text_readln(_file);
+		var _lineStringUntrimmed = file_text_readln(_file);
 		
-		if (string_starts_with(_lineString, "///")){
-			_lineString = string_trim(_lineString);
-			_lineString = string_replace(_lineString, "///", "");
+		if (string_starts_with(_lineStringUntrimmed, "///")){
+			var _lineString = string_trim(_lineStringUntrimmed);
+			_lineString = string_replace(_lineStringUntrimmed, "///", "");
 			
 			if (string_count("@", _lineString) > 0){
 				var _splitString = string_split(_lineString, " ");
@@ -624,17 +626,32 @@ function __tome_parse_markdown(_filePath){
 			
 				switch(_tagType){
 					case "@title":
-						_markdown += "# " + _tagContent + "\n";		
-						_title = _tagContent;
+						if (!_titleFound){
+							_markdown += "# " + _tagContent + "\n";		
+							_title = _tagContent;
+							_titleFound = true;
+						}else{
+							_markdown += _lineStringUntrimmed;		
+						}
 					break;
 					
 					case "@category":
-						_category = _tagContent;
+						if (!_categoryFound){
+							_category = _tagContent;
+						}else{
+							_markdown += _lineStringUntrimmed;	
+						}
+					break;
+					
+					default:
+						_markdown += _lineStringUntrimmed;	
 					break;
 				}
+			}else{
+				_markdown += _lineStringUntrimmed;		
 			}
 		}else{
-			_markdown += _lineString;	
+			_markdown += _lineStringUntrimmed;	
 		}
 	}
 	

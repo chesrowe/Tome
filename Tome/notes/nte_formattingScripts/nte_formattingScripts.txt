@@ -1,0 +1,187 @@
+/// @title Formatting Scripts
+/// @category Getting Started
+
+## Setting up Your Scripts
+Getting started, each script you add using `tome_add_script` must contain at least the following Tome tag: `@title`. This will set the name of the page in the sidebar of your site: `@title Unit Array`
+
+![Imgur](https://imgur.com/lZp1VIP.png)
+
+Now adding a `@category` tag will categorize the page in the sidebar like: `@category Units`
+
+![Imgur](https://imgur.com/3rOaW0e.png)
+
+## Basic Formatting of Jsdoc
+Tome works by parsing jsdoc tags from within your scripts. It is important that your jsdoc is structured in a specific, feather compliant way. Most of the jsdoc tags are basic, commonly supported ones, and others are unique to Tome.
+
+For an understanding of how jsdoc comments work in GameMaker, check out [this](https://manual.gamemaker.io/lts/en/#t=The_Asset_Editors%2FCode_Editor_Properties%2FJSDoc_Script_Comments.htm&rhsearch=jsdoc&rhhlterm=jsdoc) page of the manual.
+
+?> Also it's worth noting that jsdoc comments like `@param` or `@returns` which require a datatype like `@param {string} foo` don't necessarily need to conform to feather's rules, and can be literally anything.
+
+As a basic example, here is a function from this library(yes, Tome's documentation was generated with tome!):
+
+```gml
+/// @func tome_add_to_sidebar(name, link, category)
+/// @desc Adds an item to the sidebar of your site
+/// @param {string} name The name of the item
+/// @param {string} link The link to the item
+/// @param {string} category The category of the item
+function tome_add_to_sidebar(_name, _link, _category){
+	var _sidebarItem = {
+		title: _name,
+		link: _link,
+		category: _category
+	}
+	array_push(global.__tomeAdditionalSidebarItemsArray, _sidebarItem);
+}
+```
+
+### Things To Note Here
+- The order of the jsdoc comments must always be the following:
+	1. @func 
+	2. @desc 
+	3. @param 
+	4. @returns 
+
+### Additional Tome Tags
+
+#### `@text`
+For adding a single/multi-line block of [markdown](https://www.markdownguide.org/getting-started/) text.
+
+##### Examples:
+`/// @text **This is some bold text**`
+
+```gml
+/// @text **Bold** and *italisized* text
+/// across muitiple lines!
+/// ## You can use keep going!
+```
+
+#### `@code`
+For embeding a code block on your site like:
+
+![Imgur](https://imgur.com/dx3tyfK.png)
+
+##### Example
+```gml
+/// @code
+/// toolInv = new inventory(4, ["itemTool"], false);
+/// storage = new inventory(64, ["item"], true);
+```
+## Full Example of Tome's *Primary Functions* Page
+```gml
+/// @title Primary functions
+/// @category API Reference
+/// @text Below are the functions you'll use to set up your docs and generate them. 
+
+/// @func tome_add_script(script)
+/// @desc adds a script to be parsed as a page to your site
+/// @param {asset.GMScript} script The script to add
+function tome_add_script(_script){
+	var _scriptName = script_get_name(_script);
+	var _filePath = __tome_file_project_get_directory() + string("scripts/{0}/{0}.gml", _scriptName, _scriptName);
+	array_push(global.__tomeFileArray, _filePath);
+}
+
+/// @text ?> When using `tome_add_note()`, only the tags @title and @category are parsed. The rest of the text is displayed as-is.
+
+/// @func tome_add_note(noteName)
+/// @desc Adds a note to be parsed as a page to your site
+/// @param {string} noteName The note to add
+function tome_add_note(_noteName){
+	var _filePath = __tome_file_project_get_directory() + string("notes/{0}/{0}.txt", _noteName, _noteName);
+	array_push(global.__tomeFileArray, _filePath);
+}
+
+/// @text ?> When adding a file, if you want Tome to parse the jsdoc tags @func, @desc, @param, and @return, the file must have the extension `.gml`.
+
+/// @func tome_add_file(filePath)
+/// @desc adds a file to be parsed when the docs are generated
+/// @param {string} filePath The file to add
+function tome_add_file(_filePath){
+	array_push(global.__tomeFileArray, _filePath);
+}
+
+/// @func tome_set_homepage_from_file(filePath)
+/// @desc Sets the homepage of your site to be the contents of a file (.txt, or .md)
+/// @param {string} filePath The file to use as the homepage
+function tome_set_homepage_from_file(_filePath){
+	var _homePageParseStruct = __tome_parse_markdown(_filePath);
+	global.__tomeHomepage = _homePageParseStruct.markdown;
+}
+
+/// @func tome_set_homepage_from_note(noteName)
+/// @desc sets the homepage of your site to be the contents of the note
+/// @param {string} noteName The note to use as the homepage
+function tome_set_homepage_from_note(_noteName){
+	var _homePageParseStruct = __tome_parse_markdown(__tome_file_project_get_directory() + string("notes/{0}/{0}.txt", _noteName, _noteName));
+	global.__tomeHomepage = _homePageParseStruct.markdown;
+}
+
+/// @func tome_add_to_sidebar(name, link, category)
+/// @desc Adds an item to the sidebar of your site
+/// @param {string} name The name of the item
+/// @param {string} link The link to the item
+/// @param {string} category The category of the item
+function tome_add_to_sidebar(_name, _link, _category){
+	var _sidebarItem = {
+		title: _name,
+		link: _link,
+		category: _category
+	}
+	array_push(global.__tomeAdditionalSidebarItemsArray, _sidebarItem);
+}
+
+/// @func tome_set_site_name(name)
+/// @desc Sets the name of your site
+/// @param {string} name The name of the site
+function tome_set_site_name(_name){
+	__tome_file_update_config("name", _name);
+}
+
+/// @func tome_set_site_description(desc)
+/// @desc Sets the description of your site
+/// @param {string} desc The description of the site
+function tome_set_site_description(_desc){
+	__tome_file_update_config("description", _desc);
+}
+
+/// @func tome_set_site_theme_color(color)
+/// @desc Sets the theme color of your site
+/// @param {string} color The theme color of the site
+function tome_set_site_theme_color(_color){
+	__tome_file_update_config("themeColor", _color);
+}
+
+/// @func tome_set_site_latest_version(versionName)
+/// @desc Sets the latest version of the docs
+/// @param {string} versionName The latest version of the docs
+function tome_set_site_latest_version(_versionName){
+	global.__tomeLatestDocVersion = _versionName;
+	__tome_file_update_config("latestVersion", _versionName);
+}
+
+/// @func tome_add_navbar_link(name, link)
+/// @desc adds a link to the navbar
+/// @param {string} name The name of the link
+/// @param {string} link The link to the link
+function tome_add_navbar_link(_name, _link){
+	var _navbarItem = {
+		name: _name,
+		link: _link
+	}
+	array_push(global.__tomeNavbarItemsArray, _navbarItem);
+}
+```
+
+## All Tags
+
+| Tag Name                                    | Purpose                                                                                 | Multi-line? |
+| ------------------------------------------- | --------------------------------------------------------------------------------------- | ----------- |
+| `@func`, `@function`                        | To display the name of the function and it's parameters                                 | No          |
+| `@desc`, `@description`                     | To display a description of the function                                                | Yes         |
+| `@param`, `@parameter`, `@arg`, `@argument` | To display a parameter's name, datatype and description                                 | No          |
+| `@return`, `@returns`                       | To display the datatype or datatype + description of the value returned by the function | No          |
+| `@text`                                     | Displays a block of text, formatted using markdown                                      | Yes         |
+| `@code`, `@example`                         | Displays a code block                                                                   | Yes         |
+| `@title`                                    | The title of the page as displayed in the sidebar                                       | No          |
+| `@category`                                 | What category in the sidebar that the page will be put under                            | no          |

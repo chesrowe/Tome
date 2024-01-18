@@ -9,8 +9,10 @@
     {"id":{"name":"nte_homepage","path":"notes/nte_homepage/nte_homepage.yy",},"order":1,},
     {"id":{"name":"nte_advancedUse","path":"notes/nte_advancedUse/nte_advancedUse.yy",},"order":0,},
     {"id":{"name":"__tomeController","path":"objects/__tomeController/__tomeController.yy",},"order":1,},
+    {"id":{"name":"nte_formattingScripts","path":"notes/nte_formattingScripts/nte_formattingScripts.yy",},"order":5,},
     {"id":{"name":"__tomeSystemFunctions","path":"scripts/__tomeSystemFunctions/__tomeSystemFunctions.yy",},"order":4,},
     {"id":{"name":"nte_configuration","path":"notes/nte_configuration/nte_configuration.yy",},"order":2,},
+    {"id":{"name":"nte_exampleSite","path":"notes/nte_exampleSite/nte_exampleSite.yy",},"order":4,},
     {"id":{"name":"nte_settingUp","path":"notes/nte_settingUp/nte_settingUp.yy",},"order":3,},
     {"id":{"name":"__tomeInit","path":"scripts/__tomeInit/__tomeInit.yy",},"order":3,},
     {"id":{"name":"__tomeFuncQueue","path":"scripts/__tomeFuncQueue/__tomeFuncQueue.yy",},"order":2,},
@@ -37,9 +39,9 @@
     {"roomId":{"name":"rm_test","path":"rooms/rm_test/rm_test.yy",},},
   ],
   "Folders": [
+    {"resourceType":"GMFolder","resourceVersion":"1.0","name":"Docs","folderPath":"folders/Docs.yy","order":3,},
     {"resourceType":"GMFolder","resourceVersion":"1.0","name":"Tome","folderPath":"folders/Tome.yy","order":2,},
     {"resourceType":"GMFolder","resourceVersion":"1.0","name":"_system","folderPath":"folders/Tome/_system.yy","order":1,},
-    {"resourceType":"GMFolder","resourceVersion":"1.0","name":"Docs","folderPath":"folders/Docs.yy","order":3,},
   ],
   "AudioGroups": [
     {"resourceType":"GMAudioGroup","resourceVersion":"1.3","name":"audiogroup_default","targets":-1,},
