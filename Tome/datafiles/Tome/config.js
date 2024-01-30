@@ -3,6 +3,6 @@ const config = {
    favicon: "assets/docsIcon.png",
    themeColor: "#11DD11",
    name: "mySiteName",
-   description: "mySiteDescription",
+   description: "my doc site",
    latestVersion: "v1" ,
 };
