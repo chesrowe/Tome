@@ -179,7 +179,7 @@ function __tomeTrace(_text, _verboseOnly = false){
 		show_debug_message("Tome: " + string(_text));	
 	}
 	
-	if (!_verboseOnly && !TOME_VERBOSE){
+	if (!_verboseOnly){
 		show_debug_message("Tome: " + string(_text));			
 	}
 }
