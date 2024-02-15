@@ -13,7 +13,7 @@
 
 - Created and tested with GameMaker LTS 2022
 
-- Check out an example site [here]([www.cataclysmicstudios.com](https://www.cataclysmicstudios.com/Augury-Docs/#/Augury/))
+- Check out an example site [here]([www.cataclysmicstudios.com](https://www.cataclysmicstudios.com/Augury-Docs/#/Augury/)
 
 <p align="center" > 
   Get started by reading the <a href="https://www.cataclysmicstudios.com/Tome-Docs"> documentation </a>
