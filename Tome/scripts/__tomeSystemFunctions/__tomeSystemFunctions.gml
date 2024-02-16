@@ -251,7 +251,7 @@ function __tome_generate_docs(){
 	
 	//Sidebar
 	var _sideBarMarkdownString = "";
-	_sideBarMarkdownString += "-    [home](README)\n\n---\n\n"
+	_sideBarMarkdownString += "-    [Home](README)\n\n---\n\n"
 	var _categoriesNames = variable_struct_get_names(_categories);
 	
 	var _a = 0;

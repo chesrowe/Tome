@@ -16,13 +16,15 @@ if (_callbackArraySize > 0){
 			var _responseIsError = _requestResponseResult == "";
 			
 			//Check the HTTP status code and act accordingly
-			switch (_requestResponse.http_status){
-				//Authorization failure 
-				case 401:
-					_responseIsError = true;
-					__tomeTrace("Check that the infomation you provided in tomeConfig is correct.");
-				break;
+			if (variable_struct_exists(_requestResponse, "http_status")){
+				switch (_requestResponse.http_status){
+					//Authorization failure 
+					case 401:
+						_responseIsError = true;
+						__tomeTrace("Check that the infomation you provided in tomeConfig is correct.");
+					break;
 					
+				}
 			}
 			
 			if (typeof(_currentRequest.__callback) == "method" && !_responseIsError){		

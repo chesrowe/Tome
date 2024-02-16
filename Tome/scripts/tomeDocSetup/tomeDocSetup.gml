@@ -11,8 +11,10 @@ global.__tomeNavbarItemsArray = [];
 /*
 	Add all the files you wish to be parsed here!
 	                                              */
-tome_set_site_description("My cool site");
+tome_set_site_description("Documentation");
 tome_set_site_name("Documentation");
-tome_set_site_latest_version("v1");
+tome_set_site_latest_version("1.0");
 tome_set_site_theme_color("#11DD11");
+
+
 
