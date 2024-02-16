@@ -18,4 +18,3 @@
 
 // Show extended debug information in the console 
 #macro TOME_VERBOSE true
-

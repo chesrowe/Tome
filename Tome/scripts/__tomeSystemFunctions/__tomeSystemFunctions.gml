@@ -99,9 +99,14 @@ function __tome_http_update_file(_filePath, _fileContent){
 	// Callback function to handle the response
 	var  _sendFileUpdateRequest = function(_response, _metadata) {    
 		var _fileSha = "";
-		var _responseIsNotBlank = variable_struct_names_count(_response) > 0
 		
-		if (_response[$ "message"] != "Not Found" && _responseIsNotBlank) {
+		var _responseIsBlank = true;
+		
+		if (is_struct(_response)){
+			_responseIsBlank = variable_struct_names_count(_response) < 1
+		}
+		
+		if (_response[$ "message"] != "Not Found" && !_responseIsBlank) {
 	        __tomeTrace(string("File exists: {0} SHA: {1}", _metadata.__filePath, _response.sha), true);
 			_fileSha = _response.sha;
 	    } else {
