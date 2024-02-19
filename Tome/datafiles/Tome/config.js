@@ -1,8 +1,8 @@
 const config = {
-     otherVersions: [ "Tome" ],
-   favicon: "assets/docsIcon.png",
+     favicon: "assets/docsIcon.png",
    themeColor: "#11DD11",
-   name: "mySiteName",
-   description: "mySiteDescription",
-   latestVersion: "v1" ,
+   latestVersion: "1.0",
+   otherVersions: [ ],
+   description: "Documentation for the Tome library",
+   name: "Tome" ,
 };
