@@ -2,13 +2,13 @@
 #macro TOME_ENABLED true
 
 // Personal access token obtained from github.com/settings/tokens
-#macro TOME_GITHUB_AUTH_TOKEN ""
+#macro TOME_GITHUB_AUTH_TOKEN "gwp_pm6n4Grbiv3b33LHGtmhl1hzktB8aR2endL8"
 
 // Your Github username
-#macro TOME_GITHUB_USERNAME "username"
+#macro TOME_GITHUB_USERNAME "myUsername"
 
 // The name of the repo where the generated docs will be commited and pushed
-#macro TOME_GITHUB_REPO_NAME "repoName"
+#macro TOME_GITHUB_REPO_NAME "myRepoName"
 
 // The branch of the repo where the generated docs will be pushed
 #macro TOME_GITHUB_REPO_BRANCH "main"
@@ -18,3 +18,4 @@
 
 // Show extended debug information in the console 
 #macro TOME_VERBOSE true
+

@@ -11,7 +11,7 @@ Download the lastest version <a href = "https://github.com/chesrowe/Tome/release
 Documenting code is incredibly important, especially when working in a team or writing code that you expect others to interact with. Writing proper documentation can often be a hassle, and not to mention keeping it up to date with changes to the code base. Tome seeks to remedy this issue by allowing you to automatically generate high quality documentation directly from your project with minimal setup!
 
 ## How Tome Works
-Tome works by parsing jsdoc comments from scripts, notes, and external text files that are specified by the user. These files are converted into .md files, automatically committed to the specified GitHub repo and built into a site using [Docsify](https://docsify.js.org)
+Tome works by parsing jsdoc comments from scripts, notes, and external text files that are specified by the user. These files are converted into .md files, automatically committed to the specified GitHub repo and built into a site using [Docsify]()
 
 Get started setting Tome up for your project [here](Setting-Up-GitHub)
 
@@ -19,4 +19,4 @@ Get started setting Tome up for your project [here](Setting-Up-GitHub)
 Tome is completely open source under the MIT license. If you see something that's missing and want to add it feel free to submit a pull request and I'll look over it!
 
 ## Special Thanks
-Tome uses [TabularElf's](https://github.com/tabularelf/TabularElf) `function_execute()`, function go check it out! 
+Tome uses TabularElf's `function_execute()`, function go check it out! 

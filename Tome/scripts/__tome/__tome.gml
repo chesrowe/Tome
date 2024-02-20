@@ -81,26 +81,16 @@ function tome_set_site_theme_color(_color){
 	__tome_file_update_config("themeColor", _color);
 }
 
-/// @text >? Version names currently cannot contain spaces! 
-
 /// @func tome_set_site_latest_version(versionName)
-/// @desc Sets the latest version of the docs. The version
+/// @desc Sets the latest version of the docs
 /// @param {string} versionName The latest version of the docs
 function tome_set_site_latest_version(_versionName){
-	var _fixedVersionName = string_replace_all(_versionName, " ", "-");
-	global.__tomeLatestDocVersion = _fixedVersionName;
-	__tome_file_update_config("latestVersion", _fixedVersionName);
-}
-
-/// @func tome_set_site_older_versions(versions)
-/// @desc Specifically set what older versions of your docs you want to show on the site's version selector
-/// @param {array<string>} versions An array of older versions names to display in the version selector
-function tome_set_site_older_versions(_versions){
-	__tome_file_update_config("otherVersions", _versions);	
+	global.__tomeLatestDocVersion = _versionName;
+	__tome_file_update_config("latestVersion", _versionName);
 }
 
 /// @func tome_add_navbar_link(name, link)
-/// @desc Adds a link to the navbar
+/// @desc adds a link to the navbar
 /// @param {string} name The name of the link
 /// @param {string} link The link to the link
 function tome_add_navbar_link(_name, _link){
@@ -110,8 +100,6 @@ function tome_add_navbar_link(_name, _link){
 	}
 	array_push(global.__tomeNavbarItemsArray, _navbarItem);
 }
-
-
 
 
 

@@ -41,100 +41,6 @@ function tome_add_to_sidebar(_name, _link, _category){
 	2. @desc 
 	3. @param 
 	4. @returns 
-	
-
-### Constructors
-- Tome will automattically format constructors and their methods as well! Just use put `@constructor` before defining the constructor function and then use `@method` for each method within the constructor instead of the usual `@func`
-
-#### Example
-```gml
-/// @constructor
-/// @func dropTable(maxItemAmount)
-/// @param {real} maxItemAmount The amount of items that the droptable contains, after all the items have been dropped, EMPTY_STRUCT will be returned
-function dropTable(_maxItemAmount) constructor {
-    __drops = [];
-    __totalItemAmount = _maxItemAmount;
-	
-	/// @method getItemAmountLeft()
-	/// @desc Returns the number of remaining items in the drop table
-	/// @return {real}
-	static getItemAmountLeft = function(){
-		return __totalItemAmount;
-	}
-	
-	/// @method getDrops()
-	/// @desc Returns the __drop array
-	/// @return {array<drops>}
-	static getDrops = function(){
-		var _copyOfDrops = [];
-		var _i = 0;
-		
-		repeat(array_length(__drops)){
-			var _currentDrop = __drops[_i];
-			
-			array_push(_copyOfDrops, {
-				itemConstructorName: _currentDrop.__itemConstructorName,
-				dropAmount: _currentDrop.__dropAmount,
-				dropChance: _currentDrop.__dropChance	
-			});
-			_i++;	
-		}
-		return _copyOfDrops;	
-	}
-	
-	/// @method dropAdd(itemConstructorName, dropChance, dropAmount)
-	/// @param {string} itemConstructorName The name of the item 
-	/// @param {real} dropChance The chance that the item will be dropped when rolling a drop ex: 128 = 1 in 128
-	/// @param {real} dropAmount The item quantity that will be dropped if this item is rolled
-	/// @return {undefined}
-	static dropAdd = function(_itemConstructorName, _dropChance, _dropAmount) {
-		var _drop = new __drop(_itemConstructorName, _dropChance, _dropAmount);
-		array_push(__drops, _drop);
-	}
-	
-	/// @method dropRoll()
-	/// @desc Rolls a drop from the table. 
-	/// @return {struct.drop|struct.EMPTY_STRUCT} A struct with properties: `itemConstructorName` and `dropAmount`. If no item is rolled, EMPTY_STRUCT will be returned.
-	static dropRoll = function() {
-	    if (__totalItemAmount <= 0) {
-	        return EMPTY_STRUCT; // Return EMPTY_STRUCT if no more drops can be rolled
-	    }
-
-	    // Create a cumulative weight array
-	    var _cumulativeWeights = [];
-	    var _cumulativeWeight = 0;
-
-	    for (var _i = 0; _i < array_length(__drops); _i++) {
-	        _cumulativeWeight += 1 / __drops[_i].__dropChance;
-	        _cumulativeWeights[_i] = _cumulativeWeight;
-	    }
-
-	    // Generate a random number between 0 and total cumulative weight
-	    var _randomWeight = random(_cumulativeWeight);
-
-	    // Roll for a single drop
-	    for (var _i = 0; _i < array_length(__drops); _i++) {
-	        var _weight = (_i == 0) ? _cumulativeWeights[_i] : _cumulativeWeights[_i] - _cumulativeWeights[_i - 1];
-	        if (_randomWeight <= _weight) {
-	            // Decrement the totalItemAmount
-	            __totalItemAmount -= __drops[_i].__dropAmount;
-				var _drop = __drops[_i];
-
-	            return {itemConstructorName: _drop.__itemConstructorName, dropAmount: _drop.__dropAmount}; // Return the drop struct
-	        }
-	        _randomWeight -= _weight;
-	    }
-
-	    return EMPTY_STRUCT; // Return EMPTY_STRUCT if no item is rolled
-	}
-	
-	static __drop = function(_itemConstructorName, _dropChance, _dropAmount) constructor {
-	    __itemConstructorName = _itemConstructorName;
-	    __dropAmount = _dropAmount;
-		__dropChance = _dropChance;
-	}
-}
-```
 
 ### Additional Tome Tags
 
@@ -278,6 +184,4 @@ function tome_add_navbar_link(_name, _link){
 | `@text`                                     | Displays a block of text, formatted using markdown                                      | Yes         |
 | `@code`, `@example`                         | Displays a code block                                                                   | Yes         |
 | `@title`                                    | The title of the page as displayed in the sidebar                                       | No          |
-| `@category`                                 | What category in the sidebar that the page will be put under                            | No          |
-| `@constructor`                              | To define a function as a constructor function                                          | No          |
-| `@method`                                   | Used in place of `@func`/`@function` for methods within a constructor                   | No          |
+| `@category`                                 | What category in the sidebar that the page will be put under                            | no          |

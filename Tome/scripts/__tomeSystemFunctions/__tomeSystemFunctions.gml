@@ -99,14 +99,9 @@ function __tome_http_update_file(_filePath, _fileContent){
 	// Callback function to handle the response
 	var  _sendFileUpdateRequest = function(_response, _metadata) {    
 		var _fileSha = "";
+		var _responseIsNotBlank = variable_struct_names_count(_response) > 0
 		
-		var _responseIsBlank = true;
-		
-		if (is_struct(_response)){
-			_responseIsBlank = variable_struct_names_count(_response) < 1
-		}
-		
-		if (_response[$ "message"] != "Not Found" && !_responseIsBlank) {
+		if (_response[$ "message"] != "Not Found" && _responseIsNotBlank) {
 	        __tomeTrace(string("File exists: {0} SHA: {1}", _metadata.__filePath, _response.sha), true);
 			_fileSha = _response.sha;
 	    } else {
@@ -184,7 +179,7 @@ function __tomeTrace(_text, _verboseOnly = false){
 		show_debug_message("Tome: " + string(_text));	
 	}
 	
-	if (!_verboseOnly){
+	if (!_verboseOnly && !TOME_VERBOSE){
 		show_debug_message("Tome: " + string(_text));			
 	}
 }
@@ -256,7 +251,7 @@ function __tome_generate_docs(){
 	
 	//Sidebar
 	var _sideBarMarkdownString = "";
-	_sideBarMarkdownString += "-    [Home](README)\n\n---\n\n"
+	_sideBarMarkdownString += "-    [home](README)\n\n---\n\n"
 	var _categoriesNames = variable_struct_get_names(_categories);
 	
 	var _a = 0;
