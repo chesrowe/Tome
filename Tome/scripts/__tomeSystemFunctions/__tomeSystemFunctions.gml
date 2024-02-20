@@ -95,8 +95,6 @@ function __tome_http_add_request_to_sent(_requestId, _callback = -1, _callbackMe
 /// @param {string} fileContents The file contents of the file being sent
 function __tome_http_update_file(_filePath, _fileContent){
 	var _encodedFileContent = base64_encode(_fileContent);
-
-	var _onDiskSha = __tome_generate_file_sha(_fileContent);
 	
 	// Callback function to handle the response
 	var  _sendFileUpdateRequest = function(_response, _metadata) {    
@@ -140,15 +138,11 @@ function __tome_http_update_file(_filePath, _fileContent){
 				//discord_log_console(_metadata.__filePath + " could NOT commit!");
 			}
 		}
-		
-		if (_metadata.__onDiskSha != _fileSha){
-			__tome_http_request(_endpoint, "PUT", _requestBody,  _responseCallback, {__filePath: _metadata.__filePath});
-		}else{
-			__tomeTrace(string("File: `{0}` not changed. No need to commit.", _metadata.__filePath), true);
-		}
+				
+		__tome_http_request(_endpoint, "PUT", _requestBody,  _responseCallback, {__filePath: _metadata.__filePath});
 	}
 	
-	__tome_http_get_file_info(_filePath, _sendFileUpdateRequest, {__filePath: _filePath, __fileContent: _encodedFileContent, __onDiskSha: _onDiskSha});		
+	__tome_http_get_file_info(_filePath, _sendFileUpdateRequest, {__filePath: _filePath, __fileContent: _encodedFileContent});		
 }
 
 #endregion
@@ -808,29 +802,4 @@ function __tome_string_trim_starting_whitespace(_string, _maxNumberOfWhitespace)
 
 #endregion
 
-#region __tome_generate_file_sha(_content)
 
-/// @desc generates the file's on disk sha (in git format) to be used to compaire to remote sha.
-/// @param {string} content The file's on disk content.
-/// @returns {real} sha the sha of the content
-
-function __tome_generate_file_sha(_content){
-	//Tome only uses blob objects, If this changes in the future, this function will need to be adjusted.
-	
-	var _byteLength = string_byte_length(_content);
-	var _header = "blob " + string(_byteLength);
-
-	var _shaBuffer = buffer_create(4096, buffer_grow, 1);
-	
-	buffer_seek(_shaBuffer, buffer_seek_start, 0);
-	
-	buffer_write(_shaBuffer, buffer_string, _header);
-	buffer_write(_shaBuffer, buffer_text, _content);
-	buffer_resize(_shaBuffer, buffer_tell(_shaBuffer));
-	
-	var _sha = buffer_sha1(_shaBuffer, 0, buffer_get_size(_shaBuffer));
-	buffer_delete(_shaBuffer);
-	
-	return _sha
-}
-#endregion
