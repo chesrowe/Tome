@@ -1,36 +1,36 @@
 /// @title Setting Up GitHub
 /// @category Getting Started
 
-?> This guide assumes you now the basics of how Github repos work
+?> This guide assumes you know the basics of how Github repos work
 
-The first thing you need to do is create a new repo to hold your docs, or create a new branch on an existing repo.
+The first thing you need to do is create a new repo to hold your docs, or create a new branch on an existing repo. Your repo must must have an active branch in order for Tome to function.
 
 ## Creating A Personal Access Token
 Once your repo is setup and ready, next you'll need to create a GitHub token in order for Tome to push your documentation remotely.
 
 1. On GitHub.com after logging in, click your avatar in the top right-hand corner of the page. 
 
-![Imgur](https://i.imgur.com/SNEuOFn.png)
+![Imgur](https://imgur.com/KeGBAf5.png)
 
 2. Click settings 
 
-![Imgur](https://i.imgur.com/Q2H4OnI.png)
+![Imgur](https://imgur.com/uPYmCLr.png)
 
 3. Click developer settings 
 
-![Imgur](https://i.imgur.com/aw1jXZJ.png)
+![Imgur](https://imgur.com/lGNTwuU.png)
 
 4. Click GitHub Apps and then click Personal access tokens 
 
-![Imgur](https://i.imgur.com/ntxavf2.png)
+![Imgur](https://imgur.com/G9Xl8ik.png)
 
 5. Click Generate new token and click Generate new token (classic) 
 
-![Imgur](https://i.imgur.com/YZ8O0j6.png)
+![Imgur](https://imgur.com/ExBcXEX.png)
 
 6. Enter a name for the token, set the expiration time, and then click the check box beside repo. 
 
-![Imgur](https://i.imgur.com/jQsXxyJ.png)
+![Imgur](https://imgur.com/DQ024g1.png)
 
 7. Scroll to the bottom of the page and click Generate. 
 
@@ -38,26 +38,26 @@ Once your repo is setup and ready, next you'll need to create a GitHub token in 
 
 8. Finally, copy your newly generated token. 
 	
-![Imgur](https://i.imgur.com/ScslEAP.png)
+![Imgur](https://imgur.com/cqgbtkH.png)
 
 ## Setting up GitHub Pages
 Next we'll configure Github pages to automatically deploy your site. Unless you are using a custom domain, your site's domain will be `username.github.io/repoName`.
 
 1. on GitHub.com, find your repo and click settings 
 
-![Imgur](https://imgur.com/rdzW9P5.png) 
+![Imgur](https://imgur.com/YT8SE05.png)
 
 2. Find **Pages** and click it 
 
-![Imgur](https://imgur.com/LfAwYrR.png)
+![Imgur](https://imgur.com/zj0gIF2.png)
 
 3. Make sure your source is set to deploy from branch, select the branch your docs are on, and then click save. 
 
-![Imgur](https://imgur.com/Dq8Vj0Q.png)
+![Imgur](https://imgur.com/47L1HJ6.png)
 
 4. After saving, and several minutes have passed, you should see at the top of the page that your site is live! 
 
-![Imgur](https://imgur.com/1umz7ep.png)
+![Imgur](https://imgur.com/oJvZQdN.png)
 
 ## Configuring Your Project
 Now on to the GameMaker side of things 

@@ -15,11 +15,23 @@ if (_callbackArraySize > 0){
 			var _requestResponseResult =  __tome_http_response_result();
 			var _responseIsError = _requestResponseResult == "";
 			
+			//Check the HTTP status code and act accordingly
+			if (variable_struct_exists(_requestResponse, "http_status")){
+				switch (_requestResponse.http_status){
+					//Authorization failure 
+					case 401:
+						_responseIsError = true;
+						__tomeTrace("Check that the infomation you provided in tomeConfig is correct.");
+					break;
+					
+				}
+			}
+			
 			if (typeof(_currentRequest.__callback) == "method" && !_responseIsError){		
 				//If the response is not an error, execute the callback for that request	
 				_currentRequest.__callback(_requestResponseResult, _currentRequest.__callbackMetadata);		
 			}else if (_responseIsError){
-				__tomeTrace("Invalid response from GitHub, check your config(__tomeConfig)");
+				__tomeTrace("An error has occurred!");
 			}
 			
 			array_push(_markForDeletionArray, _i);
