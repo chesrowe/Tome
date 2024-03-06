@@ -13,4 +13,8 @@ The following macros are used for configuring your site's repo, as well as a few
 | TOME_GITHUB_REPO_NAME          | The name of the repo where the generated docs will be committed and pushed                                                                 |
 | TOME_GITHUB_REPO_BRANCH        | The branch of the repo where the generated docs will be pushed                                                                             |
 | TOME_GITHUB_REPO_DOC_DIRECTORY | The directory within your Github repo where your docs will be pushed (In the case you don't want your doc folder at the root of your repo) |
-| TOME_VERBOSE                   | Show extended debug information in the console                                                                                                                                                                                                                                   |
+| TOME_VERBOSE                   | Show extended debug information in the console                                                                                             |                                                                                                                                      |
+| TOME_USE_EXTERNAL_TOKEN        | Use an external text file to hold your GitHub auth token (Useful for public repos where you don't have to accidently expose your tokens)   |
+| TOME_EXTERNAL_TOKEN_PATH       | If using an external text file for your token, this is the path to that text file                                                          |
+| TOME_LOCAL_REPO_MODE           | An alternative mode for Tome. Files are pushed to a local directory (most likely a GitHub desktop local repo) instead of to GitHub.com     |
+| TOME_LOCAL_REPO_PATH           | If using local repo mode, this is the path to the local repo                                                                               |

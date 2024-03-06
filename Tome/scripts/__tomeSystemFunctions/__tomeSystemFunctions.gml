@@ -16,7 +16,30 @@ function __tome_http_request(_endpoint, _requestMethod, _requestBody, _callback 
     var _baseUrl = "https://api.github.com/" + _endpoint;
     var _headers = ds_map_create();
     ds_map_add(_headers, "Content-Type", "application/json");
-    ds_map_add(_headers, "Authorization", "token " + TOME_GITHUB_AUTH_TOKEN);
+	
+	// Use the token defined in the config unless TOME_USE_EXTERNAL_TOKEN is true
+	var _authToken = TOME_GITHUB_AUTH_TOKEN;
+	
+	if (TOME_USE_EXTERNAL_TOKEN){
+		var _tokenBuffer = buffer_load(TOME_EXTERNAL_TOKEN_PATH);		
+		
+		if (_tokenBuffer == -1){
+			__tomeTrace("Cannot find local token file, check that the path specified by TOME_LOCAL_REPO_PATH is correct.");
+			buffer_delete(_tokenBuffer);
+			exit;
+		}
+		
+		try {
+			_authToken = string_replace_all(buffer_read(_tokenBuffer, buffer_text), "\\", "/");
+		}catch(_readError){
+			__tomeTrace("Cannot read local token file, make sure your token file is a text file with nothing but the token in it.");
+			exit;			
+		}
+		
+		buffer_delete(_tokenBuffer);
+	}
+	
+    ds_map_add(_headers, "Authorization", "token " + _authToken);
 
     // Add any additional headers
     if (_additionalHeaders != -1){
@@ -95,6 +118,8 @@ function __tome_http_add_request_to_sent(_requestId, _callback = -1, _callbackMe
 /// @param {string} fileContents The file contents of the file being sent
 function __tome_http_update_file(_filePath, _fileContent){
 	var _encodedFileContent = base64_encode(_fileContent);
+
+	var _onDiskSha = __tome_generate_file_sha(_fileContent);
 	
 	// Callback function to handle the response
 	var  _sendFileUpdateRequest = function(_response, _metadata) {    
@@ -138,11 +163,15 @@ function __tome_http_update_file(_filePath, _fileContent){
 				//discord_log_console(_metadata.__filePath + " could NOT commit!");
 			}
 		}
-				
-		__tome_http_request(_endpoint, "PUT", _requestBody,  _responseCallback, {__filePath: _metadata.__filePath});
+		
+		if (_metadata.__onDiskSha != _fileSha){
+			__tome_http_request(_endpoint, "PUT", _requestBody,  _responseCallback, {__filePath: _metadata.__filePath});
+		}else{
+			__tomeTrace(string("File: `{0}` not changed. No need to commit.", _metadata.__filePath), true);
+		}
 	}
 	
-	__tome_http_get_file_info(_filePath, _sendFileUpdateRequest, {__filePath: _filePath, __fileContent: _encodedFileContent});		
+	__tome_http_get_file_info(_filePath, _sendFileUpdateRequest, {__filePath: _filePath, __fileContent: _encodedFileContent, __onDiskSha: _onDiskSha});		
 }
 
 #endregion
@@ -174,6 +203,19 @@ function __tomeHttpRequest(_id, _callback = -1, _callBackMetaData = -1) construc
 
 #endregion
 
+function __tome_local_update_file(_filePath, _fileContent){
+	var _fullFilePath = TOME_LOCAL_REPO_PATH + _filePath;
+	
+	var _fileBuffer = buffer_create(0, buffer_grow, 1);
+	
+	buffer_write(_fileBuffer, buffer_text, _fileContent);
+	buffer_save(_fileBuffer, _fullFilePath);
+	buffer_delete(_fileBuffer);
+	
+	__tomeTrace("Local repo file updated: " + _filePath);
+	__tomeController.requestsCompleted++;
+}
+
 #region __tomeTrace(text)
 
 /// @Desc Outputs a message to the console prefixed with "Tome:"
@@ -203,28 +245,31 @@ function __tome_generate_docs(){
 	}
 	
 	//Create queue for updating the repo files
-	var _fileUpdateQueue = new __tome_funcQueue(60);
+	var _updateRate = (TOME_LOCAL_REPO_MODE) ? 1 : 60;
+	var _fileUpdateQueue = new __tome_funcQueue(_updateRate);
+	
+	var _updateFunction = (TOME_LOCAL_REPO_MODE) ? __tome_local_update_file : __tome_http_update_file;
 	
 	//Add basic docsify files
 	var configFileContents = __tome_file_text_read_all(__tome_file_project_get_directory() +  "datafiles/Tome/config.js");
-	_fileUpdateQueue.addFunction(__tome_http_update_file, [TOME_GITHUB_REPO_DOC_DIRECTORY + "config.js", configFileContents]);
+	_fileUpdateQueue.addFunction(_updateFunction, [TOME_GITHUB_REPO_DOC_DIRECTORY + "config.js", configFileContents]);
 	
 	var _indexFileContents = __tome_file_text_read_all(__tome_file_project_get_directory() +  "datafiles/Tome/index.html");
-	_fileUpdateQueue.addFunction(__tome_http_update_file, [TOME_GITHUB_REPO_DOC_DIRECTORY + "index.html", _indexFileContents]);
+	_fileUpdateQueue.addFunction(_updateFunction, [TOME_GITHUB_REPO_DOC_DIRECTORY + "index.html", _indexFileContents]);
 	
 	var _codeThemeFileContents = __tome_file_text_read_all(__tome_file_project_get_directory() +  "datafiles/Tome/assets/codeTheme.css");
-	_fileUpdateQueue.addFunction(__tome_http_update_file, [TOME_GITHUB_REPO_DOC_DIRECTORY + "assets/codeTheme.css", _codeThemeFileContents]);
+	_fileUpdateQueue.addFunction(_updateFunction, [TOME_GITHUB_REPO_DOC_DIRECTORY + "assets/codeTheme.css", _codeThemeFileContents]);
 	
 	var _customThemeFileContents = __tome_file_text_read_all(__tome_file_project_get_directory() +  "datafiles/Tome/assets/customTheme.css");
-	_fileUpdateQueue.addFunction(__tome_http_update_file, [TOME_GITHUB_REPO_DOC_DIRECTORY + "assets/customTheme.css", _customThemeFileContents]);
+	_fileUpdateQueue.addFunction(_updateFunction, [TOME_GITHUB_REPO_DOC_DIRECTORY + "assets/customTheme.css", _customThemeFileContents]);
 	
 	var _iconFileContents = __tome_file_text_read_all(__tome_file_project_get_directory() +  "datafiles/Tome/assets/docsIcon.png");
-	_fileUpdateQueue.addFunction(__tome_http_update_file, [TOME_GITHUB_REPO_DOC_DIRECTORY + "assets/docsIcon.png", _iconFileContents]);
+	_fileUpdateQueue.addFunction(_updateFunction, [TOME_GITHUB_REPO_DOC_DIRECTORY + "assets/docsIcon.png", _iconFileContents]);
 	
-	_fileUpdateQueue.addFunction(__tome_http_update_file, [TOME_GITHUB_REPO_DOC_DIRECTORY + ".nojekyll", ""]);
+	_fileUpdateQueue.addFunction(_updateFunction, [TOME_GITHUB_REPO_DOC_DIRECTORY + ".nojekyll", ""]);
 
 	//Update homepage 
-	_fileUpdateQueue.addFunction(__tome_http_update_file, [__tome_file_get_final_doc_path() + "README.md", global.__tomeHomepage]);
+	_fileUpdateQueue.addFunction(_updateFunction, [__tome_file_get_final_doc_path() + "README.md", global.__tomeHomepage]);
 
 	var _i = 0;
 	var _functionCallDelay = 15;
@@ -238,7 +283,7 @@ function __tome_generate_docs(){
 		
 		//Push the docs to the repo
 		var _fullFilePath =  string("{0}{1}.md", __tome_file_get_final_doc_path(), string_replace_all(_docStruct.title, " ", "-"))
-		_fileUpdateQueue.addFunction(__tome_http_update_file, [_fullFilePath, _docStruct.markdown]);
+		_fileUpdateQueue.addFunction(_updateFunction, [_fullFilePath, _docStruct.markdown]);
 		
 		//Add this file's category to the _categories struct
 		if (_docStruct.category == ""){
@@ -351,8 +396,8 @@ function __tome_generate_docs(){
 		_i++;
 	}
 		
-	_fileUpdateQueue.addFunction(__tome_http_update_file, [__tome_file_get_final_doc_path() + "_navbar.md", _navbarMarkdownString]);
-	_fileUpdateQueue.addFunction(__tome_http_update_file, [__tome_file_get_final_doc_path() + "_sidebar.md", _sideBarMarkdownString]);
+	_fileUpdateQueue.addFunction(_updateFunction, [__tome_file_get_final_doc_path() + "_navbar.md", _navbarMarkdownString]);
+	_fileUpdateQueue.addFunction(_updateFunction, [__tome_file_get_final_doc_path() + "_sidebar.md", _sideBarMarkdownString]);
 	_fileUpdateQueue.start();
 }
 
@@ -802,4 +847,29 @@ function __tome_string_trim_starting_whitespace(_string, _maxNumberOfWhitespace)
 
 #endregion
 
+#region __tome_generate_file_sha(_content)
 
+/// @desc generates the file's on disk sha (in git format) to be used to compaire to remote sha.
+/// @param {string} content The file's on disk content.
+/// @returns {real} sha the sha of the content
+
+function __tome_generate_file_sha(_content){
+	//Tome only uses blob objects, If this changes in the future, this function will need to be adjusted.
+	
+	var _byteLength = string_byte_length(_content);
+	var _header = "blob " + string(_byteLength);
+
+	var _shaBuffer = buffer_create(4096, buffer_grow, 1);
+	
+	buffer_seek(_shaBuffer, buffer_seek_start, 0);
+	
+	buffer_write(_shaBuffer, buffer_string, _header);
+	buffer_write(_shaBuffer, buffer_text, _content);
+	buffer_resize(_shaBuffer, buffer_tell(_shaBuffer));
+	
+	var _sha = buffer_sha1(_shaBuffer, 0, buffer_get_size(_shaBuffer));
+	buffer_delete(_shaBuffer);
+	
+	return _sha
+}
+#endregion
