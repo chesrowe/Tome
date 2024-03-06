@@ -16,7 +16,30 @@ function __tome_http_request(_endpoint, _requestMethod, _requestBody, _callback 
     var _baseUrl = "https://api.github.com/" + _endpoint;
     var _headers = ds_map_create();
     ds_map_add(_headers, "Content-Type", "application/json");
-    ds_map_add(_headers, "Authorization", "token " + TOME_GITHUB_AUTH_TOKEN);
+	
+	// Use the token defined in the config unless TOME_USE_EXTERNAL_TOKEN is true
+	var _authToken = TOME_GITHUB_AUTH_TOKEN;
+	
+	if (TOME_USE_EXTERNAL_TOKEN){
+		var _tokenBuffer = buffer_load(TOME_LOCAL_REPO_PATH);		
+		
+		if (_tokenBuffer == -1){
+			__tomeTrace("Cannot find local token file, check that the path specified by TOME_LOCAL_REPO_PATH is correct.");
+			buffer_delete(_tokenBuffer);
+			exit;
+		}
+		
+		try {
+			_authToken = string_replace_all(buffer_read(_tokenBuffer, buffer_text), "\\", "/");
+		}catch(_readError){
+			__tomeTrace("Cannot read local token file, make sure your token file is a text file with nothing but the token in it.");
+			exit;			
+		}
+		
+		buffer_delete(_tokenBuffer);
+	}
+	
+    ds_map_add(_headers, "Authorization", "token " + _authToken);
 
     // Add any additional headers
     if (_additionalHeaders != -1){
