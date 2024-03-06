@@ -21,7 +21,7 @@ function __tome_http_request(_endpoint, _requestMethod, _requestBody, _callback 
 	var _authToken = TOME_GITHUB_AUTH_TOKEN;
 	
 	if (TOME_USE_EXTERNAL_TOKEN){
-		var _tokenBuffer = buffer_load(TOME_LOCAL_REPO_PATH);		
+		var _tokenBuffer = buffer_load(TOME_EXTERNAL_TOKEN_PATH);		
 		
 		if (_tokenBuffer == -1){
 			__tomeTrace("Cannot find local token file, check that the path specified by TOME_LOCAL_REPO_PATH is correct.");
@@ -203,6 +203,19 @@ function __tomeHttpRequest(_id, _callback = -1, _callBackMetaData = -1) construc
 
 #endregion
 
+function __tome_local_update_file(_filePath, _fileContent){
+	var _fullFilePath = TOME_LOCAL_REPO_PATH + _filePath;
+	
+	var _fileBuffer = buffer_create(0, buffer_grow, 1);
+	
+	buffer_write(_fileBuffer, buffer_text, _fileContent);
+	buffer_save(_fileBuffer, _fullFilePath);
+	buffer_delete(_fileBuffer);
+	
+	__tomeTrace("Local repo file updated: " + _filePath);
+	__tomeController.requestsCompleted++;
+}
+
 #region __tomeTrace(text)
 
 /// @Desc Outputs a message to the console prefixed with "Tome:"
@@ -232,28 +245,31 @@ function __tome_generate_docs(){
 	}
 	
 	//Create queue for updating the repo files
-	var _fileUpdateQueue = new __tome_funcQueue(60);
+	var _updateRate = (TOME_LOCAL_REPO_MODE) ? 1 : 60;
+	var _fileUpdateQueue = new __tome_funcQueue(_updateRate);
+	
+	var _updateFunction = (TOME_LOCAL_REPO_MODE) ? __tome_local_update_file : __tome_http_update_file;
 	
 	//Add basic docsify files
 	var configFileContents = __tome_file_text_read_all(__tome_file_project_get_directory() +  "datafiles/Tome/config.js");
-	_fileUpdateQueue.addFunction(__tome_http_update_file, [TOME_GITHUB_REPO_DOC_DIRECTORY + "config.js", configFileContents]);
+	_fileUpdateQueue.addFunction(_updateFunction, [TOME_GITHUB_REPO_DOC_DIRECTORY + "config.js", configFileContents]);
 	
 	var _indexFileContents = __tome_file_text_read_all(__tome_file_project_get_directory() +  "datafiles/Tome/index.html");
-	_fileUpdateQueue.addFunction(__tome_http_update_file, [TOME_GITHUB_REPO_DOC_DIRECTORY + "index.html", _indexFileContents]);
+	_fileUpdateQueue.addFunction(_updateFunction, [TOME_GITHUB_REPO_DOC_DIRECTORY + "index.html", _indexFileContents]);
 	
 	var _codeThemeFileContents = __tome_file_text_read_all(__tome_file_project_get_directory() +  "datafiles/Tome/assets/codeTheme.css");
-	_fileUpdateQueue.addFunction(__tome_http_update_file, [TOME_GITHUB_REPO_DOC_DIRECTORY + "assets/codeTheme.css", _codeThemeFileContents]);
+	_fileUpdateQueue.addFunction(_updateFunction, [TOME_GITHUB_REPO_DOC_DIRECTORY + "assets/codeTheme.css", _codeThemeFileContents]);
 	
 	var _customThemeFileContents = __tome_file_text_read_all(__tome_file_project_get_directory() +  "datafiles/Tome/assets/customTheme.css");
-	_fileUpdateQueue.addFunction(__tome_http_update_file, [TOME_GITHUB_REPO_DOC_DIRECTORY + "assets/customTheme.css", _customThemeFileContents]);
+	_fileUpdateQueue.addFunction(_updateFunction, [TOME_GITHUB_REPO_DOC_DIRECTORY + "assets/customTheme.css", _customThemeFileContents]);
 	
 	var _iconFileContents = __tome_file_text_read_all(__tome_file_project_get_directory() +  "datafiles/Tome/assets/docsIcon.png");
-	_fileUpdateQueue.addFunction(__tome_http_update_file, [TOME_GITHUB_REPO_DOC_DIRECTORY + "assets/docsIcon.png", _iconFileContents]);
+	_fileUpdateQueue.addFunction(_updateFunction, [TOME_GITHUB_REPO_DOC_DIRECTORY + "assets/docsIcon.png", _iconFileContents]);
 	
-	_fileUpdateQueue.addFunction(__tome_http_update_file, [TOME_GITHUB_REPO_DOC_DIRECTORY + ".nojekyll", ""]);
+	_fileUpdateQueue.addFunction(_updateFunction, [TOME_GITHUB_REPO_DOC_DIRECTORY + ".nojekyll", ""]);
 
 	//Update homepage 
-	_fileUpdateQueue.addFunction(__tome_http_update_file, [__tome_file_get_final_doc_path() + "README.md", global.__tomeHomepage]);
+	_fileUpdateQueue.addFunction(_updateFunction, [__tome_file_get_final_doc_path() + "README.md", global.__tomeHomepage]);
 
 	var _i = 0;
 	var _functionCallDelay = 15;
@@ -267,7 +283,7 @@ function __tome_generate_docs(){
 		
 		//Push the docs to the repo
 		var _fullFilePath =  string("{0}{1}.md", __tome_file_get_final_doc_path(), string_replace_all(_docStruct.title, " ", "-"))
-		_fileUpdateQueue.addFunction(__tome_http_update_file, [_fullFilePath, _docStruct.markdown]);
+		_fileUpdateQueue.addFunction(_updateFunction, [_fullFilePath, _docStruct.markdown]);
 		
 		//Add this file's category to the _categories struct
 		if (_docStruct.category == ""){
@@ -380,8 +396,8 @@ function __tome_generate_docs(){
 		_i++;
 	}
 		
-	_fileUpdateQueue.addFunction(__tome_http_update_file, [__tome_file_get_final_doc_path() + "_navbar.md", _navbarMarkdownString]);
-	_fileUpdateQueue.addFunction(__tome_http_update_file, [__tome_file_get_final_doc_path() + "_sidebar.md", _sideBarMarkdownString]);
+	_fileUpdateQueue.addFunction(_updateFunction, [__tome_file_get_final_doc_path() + "_navbar.md", _navbarMarkdownString]);
+	_fileUpdateQueue.addFunction(_updateFunction, [__tome_file_get_final_doc_path() + "_sidebar.md", _sideBarMarkdownString]);
 	_fileUpdateQueue.start();
 }
 
