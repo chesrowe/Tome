@@ -436,10 +436,17 @@ function __tome_parse_script(_filepath) {
 	var _inTable = false;
 	var _codeBlockStarted = false;
 	var _inCodeBlock = false;
+	var _ignoring = false;
 
     //Loop through each line of the text file
 	while (!file_text_eof(_file)) {
 		var _lineString = file_text_readln(_file);
+		
+		/// Added removal of #region tags as the line may not always begin with "///" but may begin with "#region ///"
+		if (string_starts_with(string_trim_start(_lineString), "#region")){
+			_lineString = string_replace(_lineString, "#region", "");
+		}
+		
 		
 		//If the line has text to parse, it will start with "///"
 		if (string_starts_with(string_trim_start(_lineString), "///")){
@@ -461,136 +468,142 @@ function __tome_parse_script(_filepath) {
 				var _splitString = string_split(_lineString, " ");
 				var _tagType = _splitString[0];
 				var _tagContent = string_trim(string_replace(_lineString, _tagType, ""));
-			
-				switch(_tagType){
-					case "@title":
-						_markdown += "# " + _tagContent + "\n";		
-						_title = _tagContent;
-						_inTextBlock = false;
-					break;
-					
-					case "@function":
-					case "@func":
-						_tableStarted = false;
-						_inTable = false;
-						_foundReturn = false;
-						_markdown += string("\n## `{0}`", _tagContent);		
-						_inTextBlock = false;
-						
-						if (_inConstructor){
-							_markdown += " (*constructor*)";		
-						}else{
-							_markdown += " → {rv}";	
-						}
-						
-						_markdown += "\n";
-						
-						_inFunc = true;
-					break;
-					
-					case "@method":
-						if (_inConstructor){
-							_markdown += "\n**Methods**";	
-							_inConstructor = false;
-						}
-						
-						_markdown += string("\n### `.{0}` → {rv}\n" , _tagContent);		
-						_inTextBlock = false;
-						_tableStarted = false;
-						_inTable = false;
-						_inFunc = true;
-					break;
-					
-					case "@constructor":
-						_inConstructor = true;
-						_tableStarted = false;
-					break;
 				
-					case "@desc":
-					case "@description":
-						if (_inFunc){
-							_markdown += _tagContent + "\n";			
-							_inDesc = true;
-						}
-						
-						_tableStarted = false;
-						_inTable = false;
-					break; 
+				if (_tagType == "@ignore"){
+					_ignoring = _tagContent == "true" || _tagContent == "True" || _tagContent == "TRUE";
+				}
+				
+				if (!_ignoring){
+					switch(_tagType){
+						case "@title":
+							_markdown += "# " + _tagContent + "\n";		
+							_title = _tagContent;
+							_inTextBlock = false;
+						break;
 					
-					case "@text":
-						_markdown += _tagContent + "\n";			
-						_inTextBlock = true;
-						_inCodeBlock = false;
-						_tableStarted = false;
-						_inDesc = false;
-						_inTable = false;
-						_tableStarted = false;
-					break;
-					
-					
-					case "@code":
-					case "@example":
-						_markdown += "```gml\n";			
-						_inCodeBlock = true;
-						_tableStarted = false;
-						_inTextBlock = false;
-						_inTable = false;
-					break;
-					
-					case "@param":
-					case "@parameter":
-					case "@arg":
-					case "@argument":
-						if (_inFunc){
-							if (!_tableStarted){
-								_markdown += "\n| Parameter | Datatype  | Purpose |\n";
-								_markdown += "|-----------|-----------|---------|\n";				
-								_tableStarted = true;
-								_inTable = true;
-							}
-						
-							_inDesc = false;
+						case "@function":
+						case "@func":
+							_tableStarted = false;
+							_inTable = false;
+							_foundReturn = false;
+							_markdown += string("\n## `{0}`", _tagContent);		
 							_inTextBlock = false;
 						
-							var _paramDataTypeUntrimed = _splitString[1];
-							var _paramDataType = string_delete(_paramDataTypeUntrimed, 1, 1);
-							_paramDataType = string_delete(_paramDataType, string_pos("}", _paramDataType), 1);
-							var _paramName = _splitString[2];
-							var _paramInfo = string_replace(_tagContent, _splitString[1], "");
-							_paramInfo = string_replace(_paramInfo, _splitString[2], "");
-							_paramInfo = string_trim(_paramInfo);
-						
-							_markdown += string("|`{0}` |{1} |{2} |\n", _paramName, _paramDataType, _paramInfo);
-						}
-					break;
-					
-					case "@returns":
-					case "@return":
-						if (_inFunc){
-							_foundReturn = true;
-							var _returnInfo = string_replace(_tagContent, _splitString[1], "");
-							_returnInfo = string_trim(_returnInfo);	
-						
-							var _returnDataTypeUntrimed = _splitString[1];
-							var _returnDataType = string_delete(_returnDataTypeUntrimed, 1, 1);
-							_returnDataType = string_delete(_returnDataType, string_pos("}", _returnDataType), 1);
-							_returnDataType = __tome_parse_data_type(_returnDataType);
-						
-							var _returnStyle = (_returnDataType == "undefined") ?  "`{0}`" : "*{0}*" ;
-						
-							_markdown = string_replace(_markdown, "{rv}", string(_returnStyle, _returnDataType));
-						
-							if (_returnInfo != ""){
-								_markdown += string("\n**Returns:** {0}\n", _returnInfo);
+							if (_inConstructor){
+								_markdown += " (*constructor*)";		
+							}else{
+								_markdown += " → {rv}";	
 							}
-							
-							_inTable = false;
-						}
-					break;
+						
+							_markdown += "\n";
+						
+							_inFunc = true;
+						break;
 					
-					case "@category":
-						_category = _tagContent;
-					break;
+						case "@method":
+							if (_inConstructor){
+								_markdown += "\n**Methods**";	
+								_inConstructor = false;
+							}
+						
+							_markdown += string("\n### `.{0}` → {rv}\n" , _tagContent);		
+							_inTextBlock = false;
+							_tableStarted = false;
+							_inTable = false;
+							_inFunc = true;
+						break;
+					
+						case "@constructor":
+							_inConstructor = true;
+							_tableStarted = false;
+						break;
+				
+						case "@desc":
+						case "@description":
+							if (_inFunc){
+								_markdown += _tagContent + "\n";			
+								_inDesc = true;
+							}
+						
+							_tableStarted = false;
+							_inTable = false;
+						break; 
+					
+						case "@text":
+							_markdown += _tagContent + "\n";			
+							_inTextBlock = true;
+							_inCodeBlock = false;
+							_tableStarted = false;
+							_inDesc = false;
+							_inTable = false;
+							_tableStarted = false;
+						break;
+					
+					
+						case "@code":
+						case "@example":
+							_markdown += "```gml\n";			
+							_inCodeBlock = true;
+							_tableStarted = false;
+							_inTextBlock = false;
+							_inTable = false;
+						break;
+					
+						case "@param":
+						case "@parameter":
+						case "@arg":
+						case "@argument":
+							if (_inFunc){
+								if (!_tableStarted){
+									_markdown += "\n| Parameter | Datatype  | Purpose |\n";
+									_markdown += "|-----------|-----------|---------|\n";				
+									_tableStarted = true;
+									_inTable = true;
+								}
+						
+								_inDesc = false;
+								_inTextBlock = false;
+						
+								var _paramDataTypeUntrimed = _splitString[1];
+								var _paramDataType = string_delete(_paramDataTypeUntrimed, 1, 1);
+								_paramDataType = string_delete(_paramDataType, string_pos("}", _paramDataType), 1);
+								var _paramName = _splitString[2];
+								var _paramInfo = string_replace(_tagContent, _splitString[1], "");
+								_paramInfo = string_replace(_paramInfo, _splitString[2], "");
+								_paramInfo = string_trim(_paramInfo);
+						
+								_markdown += string("|`{0}` |{1} |{2} |\n", _paramName, _paramDataType, _paramInfo);
+							}
+						break;
+					
+						case "@returns":
+						case "@return":
+							if (_inFunc){
+								_foundReturn = true;
+								var _returnInfo = string_replace(_tagContent, _splitString[1], "");
+								_returnInfo = string_trim(_returnInfo);	
+						
+								var _returnDataTypeUntrimed = _splitString[1];
+								var _returnDataType = string_delete(_returnDataTypeUntrimed, 1, 1);
+								_returnDataType = string_delete(_returnDataType, string_pos("}", _returnDataType), 1);
+								_returnDataType = __tome_parse_data_type(_returnDataType);
+						
+								var _returnStyle = (_returnDataType == "undefined") ?  "`{0}`" : "*{0}*" ;
+						
+								_markdown = string_replace(_markdown, "{rv}", string(_returnStyle, _returnDataType));
+						
+								if (_returnInfo != ""){
+									_markdown += string("\n**Returns:** {0}\n", _returnInfo);
+								}
+							
+								_inTable = false;
+							}
+						break;
+					
+						case "@category":
+							_category = _tagContent;
+						break;
+					}
 				}
 			}else{
 				//If there is no tag but we are in a function, description, or text block, add the line to the markdown
