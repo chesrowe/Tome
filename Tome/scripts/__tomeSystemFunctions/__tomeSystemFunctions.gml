@@ -273,6 +273,7 @@ function __tome_generate_docs(){
 
 	var _i = 0;
 	var _functionCallDelay = 15;
+	var _categoriesNames = array_create(0);
 	
 	//Parse each file and add it to the repo
 	repeat (array_length(global.__tomeFileArray)){
@@ -292,6 +293,7 @@ function __tome_generate_docs(){
 			if (variable_struct_exists(_categories, _docStruct.category)){
 				array_push(_categories[$ _docStruct.category], _docStruct.title);
 			}else{
+				array_push(_categoriesNames, _docStruct.category);
 				_categories[$ _docStruct.category] = [_docStruct.title];
 			}
 		}
@@ -314,6 +316,7 @@ function __tome_generate_docs(){
 			if (variable_struct_exists(_categories, _currentSidebarItem.category)){
 				array_push(_categories[$ _currentSidebarItem.category], {title: _currentSidebarItem.title, link: _currentSidebarItem.link});
 			}else{
+				array_push(_categoriesNames, _docStruct.category);
 				_categories[$ _currentSidebarItem.category] = [{title: _currentSidebarItem.title, link: _currentSidebarItem.link}];
 			}
 		}
@@ -323,7 +326,7 @@ function __tome_generate_docs(){
 	
 	var _sideBarMarkdownString = "";
 	_sideBarMarkdownString += "-    [Home](README)\n\n---\n\n"
-	var _categoriesNames = variable_struct_get_names(_categories);
+	
 	
 	var _a = 0;
 	
@@ -380,6 +383,7 @@ function __tome_generate_docs(){
 }
 
 #endregion
+
 #region __tome_parse_script(filepath)
 
 /// @desc Parses a GML file and generates markdown documentation.
