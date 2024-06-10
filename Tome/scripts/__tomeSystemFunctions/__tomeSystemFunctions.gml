@@ -273,6 +273,7 @@ function __tome_generate_docs(){
 
 	var _i = 0;
 	var _functionCallDelay = 15;
+	var _categoriesNames = array_create(0);
 	
 	//Parse each file and add it to the repo
 	repeat (array_length(global.__tomeFileArray)){
@@ -292,6 +293,7 @@ function __tome_generate_docs(){
 			if (variable_struct_exists(_categories, _docStruct.category)){
 				array_push(_categories[$ _docStruct.category], _docStruct.title);
 			}else{
+				array_push(_categoriesNames, _docStruct.category);
 				_categories[$ _docStruct.category] = [_docStruct.title];
 			}
 		}
@@ -300,9 +302,31 @@ function __tome_generate_docs(){
 	}
 	
 	//Sidebar
+	
+	//Add additional items to the sidebar
+	_i = 0;
+
+	repeat(array_length(global.__tomeAdditionalSidebarItemsArray)){
+		var _currentSidebarItem = global.__tomeAdditionalSidebarItemsArray[_i];
+
+		//Add this file's category to the _categories struct
+		if (_currentSidebarItem.category == ""){
+			array_push(_categories.none, _currentSidebarItem.title);
+		}else{
+			if (variable_struct_exists(_categories, _currentSidebarItem.category)){
+				array_push(_categories[$ _currentSidebarItem.category], {title: _currentSidebarItem.title, link: _currentSidebarItem.link});
+			}else{
+				array_push(_categoriesNames, _docStruct.category);
+				_categories[$ _currentSidebarItem.category] = [{title: _currentSidebarItem.title, link: _currentSidebarItem.link}];
+			}
+		}
+		
+		_i++;
+	}
+	
 	var _sideBarMarkdownString = "";
 	_sideBarMarkdownString += "-    [Home](README)\n\n---\n\n"
-	var _categoriesNames = variable_struct_get_names(_categories);
+	
 	
 	var _a = 0;
 	
@@ -318,67 +342,24 @@ function __tome_generate_docs(){
 		
 		repeat(_categoryArrayLength){
 			var _currentCategoryArray = _categories[$ _currentCategory];
-			var _currentPageTitle = _currentCategoryArray[_b];
-			var _currentPageFileName = string_replace_all( _currentPageTitle, " ", "-");
-			_sideBarMarkdownString += string("-    [{0}]({1})\n", _currentPageTitle, _currentPageFileName);
 			
-			if (_b == (_categoryArrayLength - 1)){
-				_sideBarMarkdownString += "\n---\n\n";	
-			}
+			if (is_struct(_currentCategoryArray[_b])){
+				var _currentPageTitle = _currentCategoryArray[_b].title;
+				var _currentPageLink = _currentCategoryArray[_b].link;
+				_sideBarMarkdownString += string("-    [{0}]({1})\n", _currentPageTitle, _currentPageLink);
 			
-			_b++;
-		}
-		
-		_a++;
-	}
-
-	//Add additional items to the sidebar
-	var _additionalItemcategories = {
-		none: []	
-	}
-	
-	_i = 0;
-
-	repeat(array_length(global.__tomeAdditionalSidebarItemsArray)){
-		var _currentSidebarItem = global.__tomeAdditionalSidebarItemsArray[_i];
-
-		//Add this file's category to the _categories struct
-		if (_currentSidebarItem.category == ""){
-			array_push(_additionalItemcategories.none, _currentSidebarItem.title);
-		}else{
-			if (variable_struct_exists(_additionalItemcategories, _currentSidebarItem.category)){
-				array_push(_additionalItemcategories[$ _currentSidebarItem.category], {title: _currentSidebarItem.title, link: _currentSidebarItem.link});
+				if (_b == (_categoryArrayLength - 1)){
+					_sideBarMarkdownString += "\n---\n\n";	
+				}
 			}else{
-				_additionalItemcategories[$ _currentSidebarItem.category] = [{title: _currentSidebarItem.title, link: _currentSidebarItem.link}];
-			}
-		}
-		
-		_i++;
-	}
-
-	var _AdditionalItemCategoriesNames = variable_struct_get_names(_additionalItemcategories);
-	var _a = 0;
-	
-	repeat(array_length(_AdditionalItemCategoriesNames)){
-		var _currentCategory = _AdditionalItemCategoriesNames[_a];
-		
-		if (_currentCategory != "none"){
-			_sideBarMarkdownString += string("**{0}**\n\n", _currentCategory);			
-		}
-		
-		var _b = 0; 
-		var _categoryArrayLength = array_length(_additionalItemcategories[$ _currentCategory]);
-		
-		repeat(_categoryArrayLength){
-			var _currentCategoryArray = _additionalItemcategories[$ _currentCategory];
-			var _currentPageTitle = _currentCategoryArray[_b].title;
-			var _currentPageLink = _currentCategoryArray[_b].link;
-			_sideBarMarkdownString += string("-    [{0}]({1})\n", _currentPageTitle, _currentPageLink);
+				var _currentPageTitle = _currentCategoryArray[_b];
+				var _currentPageFileName = string_replace_all( _currentPageTitle, " ", "-");
+				_sideBarMarkdownString += string("-    [{0}]({1})\n", _currentPageTitle, _currentPageFileName);
 			
-			if (_b == (_categoryArrayLength - 1)){
-				_sideBarMarkdownString += "\n---\n\n";	
+				if (_b == (_categoryArrayLength - 1)){
+					_sideBarMarkdownString += "\n---\n\n";	
+				}
 			}
-			
 			_b++;
 		}
 		
