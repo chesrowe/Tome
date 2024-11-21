@@ -1,5 +1,5 @@
 //Non-userfacing functions/macros used to make the system work
-#macro __TOME_CAN_RUN  (TOME_ENABLED && (GM_build_type == "run") && ((os_type == os_windows) || (os_type == os_macosx) || (os_type == os_linux)))
+#macro __TOME_CAN_RUN (TOME_ENABLED && (GM_build_type == "run") && ((os_type == os_windows) || (os_type == os_macosx) || (os_type == os_linux)))
 
 #region __tome_http_request(endpoint, requestMethod, [callback], [callbackMetadata], [additionalHeaders])
 
@@ -446,7 +446,8 @@ function __tome_parse_script(_filepath) {
 			if (string_count("@", _lineString) > 0){
 				_lineString = string_trim(_lineString);
 				
-				var _splitString = string_split(_lineString, " ");
+				//var _splitString = string_split_ext(_lineString, [" ", "	"]);
+				var _splitString = __tome_string_split_spaces_tabs(_lineString);
 				var _tagType = _splitString[0];
 				var _tagContent = string_trim(string_replace(_lineString, _tagType, ""));
 				
@@ -664,7 +665,7 @@ function __tome_parse_markdown(_filePath){
 			_lineString = string_replace(_lineStringUntrimmed, "///", "");
 			
 			if (string_count("@", _lineString) > 0){
-				var _splitString = string_split(_lineString, " ");
+				var _splitString = string_split_ext(_lineString, [" ", "	"]);
 				var _tagType = _splitString[1];
 				var _tagContent = string_trim(string_replace(_lineString, _tagType, ""));
 			
@@ -846,7 +847,6 @@ function __tome_string_trim_starting_whitespace(_string, _maxNumberOfWhitespace)
 /// @desc generates the file's on disk sha (in git format) to be used to compaire to remote sha.
 /// @param {string} content The file's on disk content.
 /// @returns {real} sha the sha of the content
-
 function __tome_generate_file_sha(_content){
 	//Tome only uses blob objects, If this changes in the future, this function will need to be adjusted.
 	
@@ -866,4 +866,38 @@ function __tome_generate_file_sha(_content){
 	
 	return _sha
 }
+#endregion
+
+#region __tome_string_split_spaces_tabs(_string)
+
+/// @desc Splits up words separated by any number of spaces or tabs
+/// @param {string} string The string to split
+function __tome_string_split_spaces_tabs(_string) {
+    var _len = string_length(_string);
+    var _words = [];
+    var _word = "";
+    var _index = 0;
+
+    for (var i = 1; i <= len; i++) {
+        var c = string_char_at(_string, i);
+        if (c != " " && c != "\t") {
+            _word += c;
+        } else {
+            if (string_length(word) > 0) {
+                _words[_index] = _word;
+                _index += 1;
+                _word = "";
+            }
+            // Continue if the character is a space or tab
+        }
+    }
+
+    // Add the last word if it's not empty
+    if (string_length(_word) > 0) {
+        _words[_index] = _word;
+    }
+
+    return _words;
+}
+
 #endregion
