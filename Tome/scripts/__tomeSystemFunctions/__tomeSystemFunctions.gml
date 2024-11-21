@@ -1,5 +1,5 @@
 //Non-userfacing functions/macros used to make the system work
-#macro __TOME_CAN_RUN  (TOME_ENABLED && (GM_build_type == "run") && ((os_type == os_windows) || (os_type == os_macosx) || (os_type == os_linux)))
+#macro __TOME_CAN_RUN (TOME_ENABLED && (GM_build_type == "run") && ((os_type == os_windows) || (os_type == os_macosx) || (os_type == os_linux)))
 
 #region __tome_http_request(endpoint, requestMethod, [callback], [callbackMetadata], [additionalHeaders])
 
@@ -273,6 +273,7 @@ function __tome_generate_docs(){
 
 	var _i = 0;
 	var _functionCallDelay = 15;
+	var _categoriesNames = array_create(0);
 	
 	//Parse each file and add it to the repo
 	repeat (array_length(global.__tomeFileArray)){
@@ -292,6 +293,7 @@ function __tome_generate_docs(){
 			if (variable_struct_exists(_categories, _docStruct.category)){
 				array_push(_categories[$ _docStruct.category], _docStruct.title);
 			}else{
+				array_push(_categoriesNames, _docStruct.category);
 				_categories[$ _docStruct.category] = [_docStruct.title];
 			}
 		}
@@ -300,9 +302,31 @@ function __tome_generate_docs(){
 	}
 	
 	//Sidebar
+	
+	//Add additional items to the sidebar
+	_i = 0;
+
+	repeat(array_length(global.__tomeAdditionalSidebarItemsArray)){
+		var _currentSidebarItem = global.__tomeAdditionalSidebarItemsArray[_i];
+
+		//Add this file's category to the _categories struct
+		if (_currentSidebarItem.category == ""){
+			array_push(_categories.none, _currentSidebarItem.title);
+		}else{
+			if (variable_struct_exists(_categories, _currentSidebarItem.category)){
+				array_push(_categories[$ _currentSidebarItem.category], {title: _currentSidebarItem.title, link: _currentSidebarItem.link});
+			}else{
+				array_push(_categoriesNames, _docStruct.category);
+				_categories[$ _currentSidebarItem.category] = [{title: _currentSidebarItem.title, link: _currentSidebarItem.link}];
+			}
+		}
+		
+		_i++;
+	}
+	
 	var _sideBarMarkdownString = "";
 	_sideBarMarkdownString += "-    [Home](README)\n\n---\n\n"
-	var _categoriesNames = variable_struct_get_names(_categories);
+	
 	
 	var _a = 0;
 	
@@ -318,67 +342,24 @@ function __tome_generate_docs(){
 		
 		repeat(_categoryArrayLength){
 			var _currentCategoryArray = _categories[$ _currentCategory];
-			var _currentPageTitle = _currentCategoryArray[_b];
-			var _currentPageFileName = string_replace_all( _currentPageTitle, " ", "-");
-			_sideBarMarkdownString += string("-    [{0}]({1})\n", _currentPageTitle, _currentPageFileName);
 			
-			if (_b == (_categoryArrayLength - 1)){
-				_sideBarMarkdownString += "\n---\n\n";	
-			}
+			if (is_struct(_currentCategoryArray[_b])){
+				var _currentPageTitle = _currentCategoryArray[_b].title;
+				var _currentPageLink = _currentCategoryArray[_b].link;
+				_sideBarMarkdownString += string("-    [{0}]({1})\n", _currentPageTitle, _currentPageLink);
 			
-			_b++;
-		}
-		
-		_a++;
-	}
-
-	//Add additional items to the sidebar
-	var _additionalItemcategories = {
-		none: []	
-	}
-	
-	_i = 0;
-
-	repeat(array_length(global.__tomeAdditionalSidebarItemsArray)){
-		var _currentSidebarItem = global.__tomeAdditionalSidebarItemsArray[_i];
-
-		//Add this file's category to the _categories struct
-		if (_currentSidebarItem.category == ""){
-			array_push(_additionalItemcategories.none, _currentSidebarItem.title);
-		}else{
-			if (variable_struct_exists(_additionalItemcategories, _currentSidebarItem.category)){
-				array_push(_additionalItemcategories[$ _currentSidebarItem.category], {title: _currentSidebarItem.title, link: _currentSidebarItem.link});
+				if (_b == (_categoryArrayLength - 1)){
+					_sideBarMarkdownString += "\n---\n\n";	
+				}
 			}else{
-				_additionalItemcategories[$ _currentSidebarItem.category] = [{title: _currentSidebarItem.title, link: _currentSidebarItem.link}];
-			}
-		}
-		
-		_i++;
-	}
-
-	var _AdditionalItemCategoriesNames = variable_struct_get_names(_additionalItemcategories);
-	var _a = 0;
-	
-	repeat(array_length(_AdditionalItemCategoriesNames)){
-		var _currentCategory = _AdditionalItemCategoriesNames[_a];
-		
-		if (_currentCategory != "none"){
-			_sideBarMarkdownString += string("**{0}**\n\n", _currentCategory);			
-		}
-		
-		var _b = 0; 
-		var _categoryArrayLength = array_length(_additionalItemcategories[$ _currentCategory]);
-		
-		repeat(_categoryArrayLength){
-			var _currentCategoryArray = _additionalItemcategories[$ _currentCategory];
-			var _currentPageTitle = _currentCategoryArray[_b].title;
-			var _currentPageLink = _currentCategoryArray[_b].link;
-			_sideBarMarkdownString += string("-    [{0}]({1})\n", _currentPageTitle, _currentPageLink);
+				var _currentPageTitle = _currentCategoryArray[_b];
+				var _currentPageFileName = string_replace_all( _currentPageTitle, " ", "-");
+				_sideBarMarkdownString += string("-    [{0}]({1})\n", _currentPageTitle, _currentPageFileName);
 			
-			if (_b == (_categoryArrayLength - 1)){
-				_sideBarMarkdownString += "\n---\n\n";	
+				if (_b == (_categoryArrayLength - 1)){
+					_sideBarMarkdownString += "\n---\n\n";	
+				}
 			}
-			
 			_b++;
 		}
 		
@@ -465,7 +446,8 @@ function __tome_parse_script(_filepath) {
 			if (string_count("@", _lineString) > 0){
 				_lineString = string_trim(_lineString);
 				
-				var _splitString = string_split(_lineString, " ");
+				//var _splitString = string_split_ext(_lineString, [" ", "	"]);
+				var _splitString = __tome_string_split_spaces_tabs(_lineString);
 				var _tagType = _splitString[0];
 				var _tagContent = string_trim(string_replace(_lineString, _tagType, ""));
 				
@@ -683,7 +665,7 @@ function __tome_parse_markdown(_filePath){
 			_lineString = string_replace(_lineStringUntrimmed, "///", "");
 			
 			if (string_count("@", _lineString) > 0){
-				var _splitString = string_split(_lineString, " ");
+				var _splitString = string_split_ext(_lineString, [" ", "	"]);
 				var _tagType = _splitString[1];
 				var _tagContent = string_trim(string_replace(_lineString, _tagType, ""));
 			
@@ -865,7 +847,6 @@ function __tome_string_trim_starting_whitespace(_string, _maxNumberOfWhitespace)
 /// @desc generates the file's on disk sha (in git format) to be used to compaire to remote sha.
 /// @param {string} content The file's on disk content.
 /// @returns {real} sha the sha of the content
-
 function __tome_generate_file_sha(_content){
 	//Tome only uses blob objects, If this changes in the future, this function will need to be adjusted.
 	
@@ -885,4 +866,38 @@ function __tome_generate_file_sha(_content){
 	
 	return _sha
 }
+#endregion
+
+#region __tome_string_split_spaces_tabs(_string)
+
+/// @desc Splits up words separated by any number of spaces or tabs
+/// @param {string} string The string to split
+function __tome_string_split_spaces_tabs(_string) {
+    var _len = string_length(_string);
+    var _words = [];
+    var _word = "";
+    var _index = 0;
+
+    for (var i = 1; i <= len; i++) {
+        var c = string_char_at(_string, i);
+        if (c != " " && c != "\t") {
+            _word += c;
+        } else {
+            if (string_length(word) > 0) {
+                _words[_index] = _word;
+                _index += 1;
+                _word = "";
+            }
+            // Continue if the character is a space or tab
+        }
+    }
+
+    // Add the last word if it's not empty
+    if (string_length(_word) > 0) {
+        _words[_index] = _word;
+    }
+
+    return _words;
+}
+
 #endregion
