@@ -54,8 +54,8 @@
     {"resourceType":"GMIncludedFile","resourceVersion":"1.0","name":"customTheme.css","CopyToMask":-1,"filePath":"datafiles/Tome/assets",},
     {"resourceType":"GMIncludedFile","resourceVersion":"1.0","name":"docsIcon.png","CopyToMask":-1,"filePath":"datafiles/Tome/assets",},
     {"resourceType":"GMIncludedFile","resourceVersion":"1.0","name":".nojekyll","CopyToMask":-1,"filePath":"datafiles/Tome",},
-    {"resourceType":"GMIncludedFile","resourceVersion":"1.0","name":"config.js","CopyToMask":3035426170322551022,"filePath":"datafiles/Tome",},
     {"resourceType":"GMIncludedFile","resourceVersion":"1.0","name":"index.html","CopyToMask":-1,"filePath":"datafiles/Tome",},
+    {"resourceType":"GMIncludedFile","resourceVersion":"1.0","name":"config.js","CopyToMask":-1,"filePath":"datafiles/Tome",},
   ],
   "MetaData": {
     "IDEVersion": "2022.0.2.51",

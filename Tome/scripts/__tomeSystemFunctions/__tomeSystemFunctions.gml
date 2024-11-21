@@ -878,12 +878,12 @@ function __tome_string_split_spaces_tabs(_string) {
     var _word = "";
     var _index = 0;
 
-    for (var i = 1; i <= len; i++) {
+    for (var i = 1; i <= _len; i++) {
         var c = string_char_at(_string, i);
         if (c != " " && c != "\t") {
             _word += c;
         } else {
-            if (string_length(word) > 0) {
+            if (string_length(_word) > 0) {
                 _words[_index] = _word;
                 _index += 1;
                 _word = "";
