@@ -246,6 +246,7 @@ function __tome_generate_docs(){
 	
 	//Create queue for updating the repo files
 	var _updateRate = (TOME_LOCAL_REPO_MODE) ? 1 : 60;
+	
 	var _fileUpdateQueue = new __tome_funcQueue(_updateRate);
 	
 	var _updateFunction = (TOME_LOCAL_REPO_MODE) ? __tome_local_update_file : __tome_http_update_file;
