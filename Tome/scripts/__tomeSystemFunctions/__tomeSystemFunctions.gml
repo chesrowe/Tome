@@ -513,7 +513,7 @@ function __tome_parse_script(_filepath) {
 						break; 
 					
 						case "@text":
-							_markdown += _tagContent + "\n";			
+							_markdown += "\n" + _tagContent + "\n";			
 							_inTextBlock = true;
 							_inCodeBlock = false;
 							_tableStarted = false;
