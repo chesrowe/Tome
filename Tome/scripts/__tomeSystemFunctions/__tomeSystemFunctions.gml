@@ -317,7 +317,7 @@ function __tome_generate_docs(){
 			if (variable_struct_exists(_categories, _currentSidebarItem.category)){
 				array_push(_categories[$ _currentSidebarItem.category], {title: _currentSidebarItem.title, link: _currentSidebarItem.link});
 			}else{
-				array_push(_categoriesNames, _docStruct.category);
+				array_push(_categoriesNames, _currentSidebarItem.category);
 				_categories[$ _currentSidebarItem.category] = [{title: _currentSidebarItem.title, link: _currentSidebarItem.link}];
 			}
 		}

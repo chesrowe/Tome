@@ -58,6 +58,6 @@
     {"resourceType":"GMIncludedFile","resourceVersion":"1.0","name":"config.js","CopyToMask":-1,"filePath":"datafiles/Tome",},
   ],
   "MetaData": {
-    "IDEVersion": "2022.0.3.83",
+    "IDEVersion": "2022.0.3.85",
   },
 }
