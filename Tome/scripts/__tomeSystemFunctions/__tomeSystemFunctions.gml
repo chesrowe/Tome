@@ -246,6 +246,7 @@ function __tome_generate_docs(){
 	
 	//Create queue for updating the repo files
 	var _updateRate = (TOME_LOCAL_REPO_MODE) ? 1 : 60;
+	
 	var _fileUpdateQueue = new __tome_funcQueue(_updateRate);
 	
 	var _updateFunction = (TOME_LOCAL_REPO_MODE) ? __tome_local_update_file : __tome_http_update_file;
@@ -316,7 +317,7 @@ function __tome_generate_docs(){
 			if (variable_struct_exists(_categories, _currentSidebarItem.category)){
 				array_push(_categories[$ _currentSidebarItem.category], {title: _currentSidebarItem.title, link: _currentSidebarItem.link});
 			}else{
-				array_push(_categoriesNames, _docStruct.category);
+				array_push(_categoriesNames, _currentSidebarItem.category);
 				_categories[$ _currentSidebarItem.category] = [{title: _currentSidebarItem.title, link: _currentSidebarItem.link}];
 			}
 		}
@@ -512,7 +513,7 @@ function __tome_parse_script(_filepath) {
 						break; 
 					
 						case "@text":
-							_markdown += _tagContent + "\n";			
+							_markdown += "\n" + _tagContent + "\n";			
 							_inTextBlock = true;
 							_inCodeBlock = false;
 							_tableStarted = false;
@@ -878,12 +879,12 @@ function __tome_string_split_spaces_tabs(_string) {
     var _word = "";
     var _index = 0;
 
-    for (var i = 1; i <= len; i++) {
+    for (var i = 1; i <= _len; i++) {
         var c = string_char_at(_string, i);
         if (c != " " && c != "\t") {
             _word += c;
         } else {
-            if (string_length(word) > 0) {
+            if (string_length(_word) > 0) {
                 _words[_index] = _word;
                 _index += 1;
                 _word = "";
