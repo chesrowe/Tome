@@ -205,10 +205,15 @@ function __tomeHttpRequest(_id, _callback = -1, _callBackMetaData = -1) construc
 
 function __tome_local_update_file(_filePath, _fileContent){
 	var _fullFilePath = TOME_LOCAL_REPO_PATH + _filePath;
+	var _fileBuffer;
 	
-	var _fileBuffer = buffer_create(0, buffer_grow, 1);
+	if (is_string(_fileContent)){
+		_fileBuffer = buffer_create(0, buffer_grow, 1);
 	
-	buffer_write(_fileBuffer, buffer_text, _fileContent);
+		buffer_write(_fileBuffer, buffer_text, _fileContent);
+	}else{
+		_fileBuffer = _fileContent;	
+	}
 	buffer_save(_fileBuffer, _fullFilePath);
 	buffer_delete(_fileBuffer);
 	
@@ -264,7 +269,7 @@ function __tome_generate_docs(){
 	var _customThemeFileContents = __tome_file_text_read_all(__tome_file_project_get_directory() +  "datafiles/Tome/assets/customTheme.css");
 	_fileUpdateQueue.addFunction(_updateFunction, [TOME_GITHUB_REPO_DOC_DIRECTORY + "assets/customTheme.css", _customThemeFileContents]);
 	
-	var _iconFileContents = __tome_file_text_read_all(__tome_file_project_get_directory() +  "datafiles/Tome/assets/docsIcon.png");
+	var _iconFileContents = __tome_file_bin_read_all(__tome_file_project_get_directory() +  "datafiles/Tome/assets/docsIcon.png");
 	_fileUpdateQueue.addFunction(_updateFunction, [TOME_GITHUB_REPO_DOC_DIRECTORY + "assets/docsIcon.png", _iconFileContents]);
 	
 	_fileUpdateQueue.addFunction(_updateFunction, [TOME_GITHUB_REPO_DOC_DIRECTORY + ".nojekyll", ""]);
@@ -758,6 +763,17 @@ function __tome_file_text_read_all(_filePath){
 	var _fileContents = buffer_read(fileBuffer, buffer_string);
 	buffer_delete(fileBuffer);
 	return _fileContents;
+}
+
+#endregion
+
+#region __tome_file_bin_read_all(_filePath)
+
+/// @desc Loads a binary file
+/// @param {string} filePath The path to the binary file to read
+function __tome_file_bin_read_all(_filePath){
+	var fileBuffer = buffer_load(_filePath);
+	return fileBuffer;
 }
 
 #endregion
