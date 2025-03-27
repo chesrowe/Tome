@@ -13,8 +13,8 @@ global.__tomeNavbarItemsArray = [];
 	                                              */										  
 tome_set_site_description("Documentation for the Tome library");
 tome_set_site_name("Tome");
-tome_set_site_latest_version("11-20-2024");
-tome_set_site_older_versions(["03-06-2024", "02-16-2024", "02-15-2024", "Beta-1"]);
+tome_set_site_latest_version("03-27-2025");
+tome_set_site_older_versions(["11-20-2024", "03-06-2024", "02-16-2024", "02-15-2024", "Beta-1"]);
 tome_set_site_theme_color("#11DD11");
 
 tome_set_homepage_from_note("nte_homepage");
