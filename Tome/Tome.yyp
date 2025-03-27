@@ -52,10 +52,13 @@
   "IncludedFiles": [
     {"resourceType":"GMIncludedFile","resourceVersion":"1.0","name":"codeTheme.css","CopyToMask":-1,"filePath":"datafiles/Tome/assets",},
     {"resourceType":"GMIncludedFile","resourceVersion":"1.0","name":"customTheme.css","CopyToMask":-1,"filePath":"datafiles/Tome/assets",},
-    {"resourceType":"GMIncludedFile","resourceVersion":"1.0","name":"docsIcon.png","CopyToMask":-1,"filePath":"datafiles/Tome/assets",},
+    {"resourceType":"GMIncludedFile","resourceVersion":"1.0","name":"docsIcon.png","CopyToMask":3035426170322551022,"filePath":"datafiles/Tome/assets",},
     {"resourceType":"GMIncludedFile","resourceVersion":"1.0","name":".nojekyll","CopyToMask":-1,"filePath":"datafiles/Tome",},
     {"resourceType":"GMIncludedFile","resourceVersion":"1.0","name":"index.html","CopyToMask":-1,"filePath":"datafiles/Tome",},
     {"resourceType":"GMIncludedFile","resourceVersion":"1.0","name":"config.js","CopyToMask":-1,"filePath":"datafiles/Tome",},
+    {"resourceType":"GMIncludedFile","resourceVersion":"1.0","name":"config.js","CopyToMask":-1,"filePath":"datafiles/UnmodifiedFiles",},
+    {"resourceType":"GMIncludedFile","resourceVersion":"1.0","name":"tomeConfig.gml","CopyToMask":-1,"filePath":"datafiles/UnmodifiedFiles",},
+    {"resourceType":"GMIncludedFile","resourceVersion":"1.0","name":"tomeDocSetup.gml","CopyToMask":-1,"filePath":"datafiles/UnmodifiedFiles",},
   ],
   "MetaData": {
     "IDEVersion": "2022.0.3.85",
