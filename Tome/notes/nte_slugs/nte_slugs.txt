@@ -1,0 +1,32 @@
+/// @slug slug-file-layout-tag
+You can create a note that holds multiple slugs such as
+
+
+```
+/// @ignore /// @slug some-slug
+Examples:
+
+'''
+foo();
+foo(bar);
+foo(bar, fib);
+'''
+
+/// @ignore /// @slug some-other-slug
+Examples:
+
+'''
+boo();
+boo(far);
+boo(far, bif);
+'''
+```
+
+/// @slug slug-use-of-slugs
+```gml
+/// @function someFunction(someParameter)
+/// @desc A function that does something
+/// @ignore /// @slug some-slug
+/// @param {any} someParam A parameter that changes the behavior of the function
+/// @returns {null}
+```

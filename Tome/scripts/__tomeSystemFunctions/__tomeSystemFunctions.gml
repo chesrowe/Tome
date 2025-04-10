@@ -244,6 +244,37 @@ function __tomeTrace(_text, _verboseOnly = false){
 /// @desc Parses all files added via `tome_add_` functions and generates documentions for the files.  
 ///              Then it adds them to the repo path specified with the macro `TOME_REPO_PATH`
 function __tome_generate_docs(){
+	
+	// Check for duplicate files, because someone may accidentally add files multiple times.
+	
+	for (var _fileIndex = 0; _fileIndex < array_length(global.__tomeSlugArray); _fileIndex++){
+		for (var _checkIndex = _fileIndex; _checkIndex < array_length(global.__tomeSlugArray); _checkIndex++){
+			if (_checkIndex != _fileIndex){
+				if (global.__tomeSlugArray[_checkIndex] == global.__tomeSlugArray[_fileIndex]){
+					array_delete(global.__tomeSlugArray, _checkIndex, 1);
+					_checkIndex--;	
+				}
+			}
+		}
+	}
+	
+	for (var _fileIndex = 0; _fileIndex < array_length(global.__tomeFileArray); _fileIndex++){
+		for (var _checkIndex = _fileIndex; _checkIndex < array_length(global.__tomeFileArray); _checkIndex++){
+			if (_checkIndex != _fileIndex){
+				if (global.__tomeFileArray[_checkIndex] == global.__tomeFileArray[_fileIndex]){
+					array_delete(global.__tomeFileArray, _checkIndex, 1);
+					_checkIndex--;	
+				}
+			}
+		}
+	}
+	
+	var _slugIndex = 0;
+	repeat (array_length(global.__tomeSlugArray)){
+		__tome_parse_markdown_slugs(global.__tomeSlugArray[_slugIndex]);
+		_slugIndex++;	
+	}
+	
 	//Holds category/title pairs
 	var _categories = {
 		none: []	
@@ -391,7 +422,6 @@ function __tome_generate_docs(){
 #endregion
 
 #region __tome_parse_script(filepath)
-
 /// @desc Parses a GML file and generates markdown documentation.
 /// @param {string} filepath Path to the GML file.
 /// @returns {struct} Struct containing the markdown text, title, and category
@@ -500,7 +530,16 @@ function __tome_parse_script(_filepath) {
 							_inTable = false;
 							_inFunc = true;
 						break;
-					
+						
+						case "@slug":
+						case "@insert":
+							for (var _slugIndex = 0; _slugIndex < array_length(__tomeController.slugs); _slugIndex++){
+								if (_tagContent == __tomeController.slugs[_slugIndex][0]){
+									_markdown +=  "\n" + __tomeController.slugs[_slugIndex][1] + "\n";
+								}
+							}			
+						break;
+						
 						case "@constructor":
 							_inConstructor = true;
 							_tableStarted = false;
@@ -642,7 +681,6 @@ function __tome_parse_script(_filepath) {
 #endregion
 
 #region __tome_parse_markdown(_filePath)
-
 /// @desc Parses a markdown file and returns a struct containing the markdown text, title, and category. Unlike the script parser, this function only parses the tags @title and @category, all other text is just added to the markdown.
 /// @param {string} _filePath The path to the file
 /// @returns {struct} Struct containing the markdown text, title, and category
@@ -694,6 +732,15 @@ function __tome_parse_markdown(_filePath){
 						}
 					break;
 					
+					case "@slug":
+					case "@insert":
+						for (var _slugIndex = 0; _slugIndex < array_length(__tomeController.slugs); _slugIndex++){
+							if (_tagContent == __tomeController.slugs[_slugIndex][0]){
+								_markdown +=  "\n" + __tomeController.slugs[_slugIndex][1] + "\n";
+							}
+						}			
+					break;
+					
 					default:
 						_markdown += _lineStringUntrimmed;	
 					break;
@@ -711,6 +758,82 @@ function __tome_parse_markdown(_filePath){
 		markdown: _markdown,
 		category: _category,
 		title: _title
+	}
+}
+
+#endregion
+
+#region __tome_parse_markdown_slugs(_filePath)
+/// @desc Parses a markdown file and returns a struct containing the markdown text, title, and category. Unlike the script parser, this function only parses the tags @title and @category, all other text is just added to the markdown.
+/// @param {string} _filePath The path to the file
+/// @returns {null}
+function __tome_parse_markdown_slugs(_filePath){
+	var _file = file_text_open_read(_filePath);
+	var _inSlug = false;
+	var _markdown = "";
+	var _slugName = "";
+
+	if (_file == -1) {
+		__tomeTrace("Failed to open file: " + _filePath);
+	}else{
+		while (!file_text_eof(_file)) {
+			var _lineStringUntrimmed = file_text_readln(_file);
+		
+			if (string_starts_with(_lineStringUntrimmed, "///")){
+				var _lineString = string_trim(_lineStringUntrimmed);
+				_lineString = string_replace(_lineStringUntrimmed, "///", "");
+			
+				if (string_count("@", _lineString) > 0){
+					var _splitString = string_split_ext(_lineString, [" ", "	"]);
+					var _tagType = _splitString[1];
+					var _tagContent = string_trim(string_replace(_lineString, _tagType, ""));
+			
+					switch(_tagType){
+						case "@slug":
+						case "@insert":
+							if (_inSlug){
+								if (_markdown != ""){
+									array_push(__tomeController.slugs, [_slugName, _markdown]);	
+								}
+							}
+						
+							_inSlug = true;
+						
+							_slugName = _tagContent;
+							_markdown = "";
+						
+						
+							var _slugIndex = 0;
+							repeat(array_length(__tomeController.slugs)){
+								if (_slugName == __tomeController.slugs[_slugIndex][0]){
+									_inSlug = false;
+									break;
+								}
+								_slugIndex++;
+							}
+						break;
+						
+						case "@ignore":
+							_markdown += _tagContent + "\n";
+						break;
+					
+						default:
+							_markdown += _lineStringUntrimmed;
+						break;
+					}
+				}else{
+					_markdown += _lineStringUntrimmed;		
+				}
+			}else{
+				_markdown += _lineStringUntrimmed;	
+			}
+		}
+		
+		if (_inSlug){
+			if (_markdown != ""){
+				array_push(__tomeController.slugs, [_slugName, _markdown]);	
+			}
+		}
 	}
 }
 

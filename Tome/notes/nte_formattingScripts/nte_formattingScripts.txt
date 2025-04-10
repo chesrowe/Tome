@@ -2,13 +2,9 @@
 /// @category Getting Started
 
 ## Setting up Your Scripts
-Getting started, each script you add using `tome_add_script` must contain at least the following Tome tag: `@title`. This will set the name of the page in the sidebar of your site: `@title Unit Array`
+Getting started, each script you add using `tome_add_script` must contain the following Tome tags: `@category` and `@title`. This will set the name of the page in the sidebar of your site: `@title Unit Array` and the Category it appears under: `@category Units`
 
-![Imgur](https://imgur.com/lZp1VIP.png)
-
-Now adding a `@category` tag will categorize the page in the sidebar like: `@category Units`
-
-![Imgur](https://imgur.com/3rOaW0e.png)
+![Imgur](https://i.imgur.com/DfzC3kE.png)
 
 ## Basic Formatting of Jsdoc
 Tome works by parsing jsdoc tags from within your scripts. It is important that your jsdoc is structured in a specific, feather compliant way. Most of the jsdoc tags are basic, commonly supported ones, and others are unique to Tome.
@@ -161,6 +157,33 @@ For embeding a code block on your site like:
 /// toolInv = new inventory(4, ["itemTool"], false);
 /// storage = new inventory(64, ["item"], true);
 ```
+
+The use of slugs can help reduce bloat in your implementation file, if you chose to add examples as a part of your JSDoc. 
+
+## Slugs
+
+#### Defining slugs
+You can create note files that contain additonal documentation for functions that can then be insterted into your JSDocs by using the @slug or @insert tag.
+
+!> Slugs must be defined in a note file.
+
+/// @slug slug-file-layout-tag
+
+
+
+#### Using slugs
+To add a slug into the JSDoc markdown you simply use the @slug tag as such
+
+/// @slug slug-use-of-slugs
+
+This will result in markdown that outputs like this
+
+<p align = "center">
+    <img src = "https://i.imgur.com/5ZQsHnf.png" /> <br>
+</p>
+
+
+
 ## Full Example of Tome's *Primary Functions* Page
 ```gml
 /// @title Primary functions

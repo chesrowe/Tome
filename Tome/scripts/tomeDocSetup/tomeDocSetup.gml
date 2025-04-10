@@ -1,5 +1,6 @@
 #region System(don't mess with these)
 
+global.__tomeSlugArray = [];
 global.__tomeFileArray = [];
 global.__tomeAdditionalSidebarItemsArray = [];
 global.__tomeHomepage = "Homepage";
@@ -22,5 +23,5 @@ tome_add_script("__tome");
 tome_add_note("nte_settingUp");
 tome_add_note("nte_configuration");
 tome_add_note("nte_exampleSite");
-tome_add_note("nte_formattingScripts");
+tome_add_note("nte_formattingScripts", "nte_slugs");
 tome_add_note("nte_advancedUse");

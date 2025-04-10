@@ -2,12 +2,19 @@
 /// @category API Reference
 /// @text Below are the functions you'll use to set up your docs and generate them. 
 
-/// @func tome_add_script(script)
+/// @func tome_add_script(script, slugs)
 /// @desc adds a script to be parsed as a page to your site
+/// @slug docs-add-script
 /// @param {string} scriptName The name off the script to add
+/// @param {string} slugs The name of any notes that will be used for adding slugs.
 function tome_add_script(_scriptName){
-	var _filePath = __tome_file_project_get_directory() + string("scripts/{0}/{0}.gml", _scriptName, _scriptName);
+	var _filePath = __tome_file_project_get_directory() + string("scripts/{0}/{0}.gml", _scriptName);
 	array_push(global.__tomeFileArray, _filePath);
+	
+	for (var i = 1; i < argument_count; i++){
+		_filePath = __tome_file_project_get_directory() + string("notes/{0}/{0}.txt", argument[i]);
+		array_push(global.__tomeSlugArray, _filePath);		
+	}
 }
 
 /// @text ?> When using `tome_add_note()`, only the tags @title and @category are parsed. The rest of the text is displayed as-is.
@@ -15,9 +22,15 @@ function tome_add_script(_scriptName){
 /// @func tome_add_note(noteName)
 /// @desc Adds a note to be parsed as a page to your site
 /// @param {string} noteName The note to add
+/// @param {string} slugs The name of any notes that will be used for adding slugs.
 function tome_add_note(_noteName){
 	var _filePath = __tome_file_project_get_directory() + string("notes/{0}/{0}.txt", _noteName, _noteName);
 	array_push(global.__tomeFileArray, _filePath);
+	
+	for (var i = 1; i < argument_count; i++){
+		_filePath = __tome_file_project_get_directory() + string("notes/{0}/{0}.txt", argument[i]);
+		array_push(global.__tomeSlugArray, _filePath);		
+	}
 }
 
 /// @text ?> When adding a file, if you want Tome to parse the jsdoc tags @func, @desc, @param, and @return, the file must have the extension `.gml`.
