@@ -1,6 +1,6 @@
 
 #region System(don't mess with these)
-
+global.__tomeSlugArray = [];
 global.__tomeFileArray = [];
 global.__tomeAdditionalSidebarItemsArray = [];
 global.__tomeHomepage = "Homepage";

@@ -59,7 +59,7 @@
     {"resourceType":"GMIncludedFile","resourceVersion":"1.0","name":"config.js","CopyToMask":-1,"filePath":"datafiles/Tome",},
     {"resourceType":"GMIncludedFile","resourceVersion":"1.0","name":"config.js","CopyToMask":-1,"filePath":"datafiles/UnmodifiedFiles",},
     {"resourceType":"GMIncludedFile","resourceVersion":"1.0","name":"tomeConfig.gml","CopyToMask":-1,"filePath":"datafiles/UnmodifiedFiles",},
-    {"resourceType":"GMIncludedFile","resourceVersion":"1.0","name":"tomeDocSetup.gml","CopyToMask":-1,"filePath":"datafiles/UnmodifiedFiles",},
+    {"resourceType":"GMIncludedFile","resourceVersion":"1.0","name":"tomeDocSetup.gml","CopyToMask":3035426170322551022,"filePath":"datafiles/UnmodifiedFiles",},
     {"resourceType":"GMIncludedFile","resourceVersion":"1.0","name":"SetupRelease.bat","CopyToMask":-1,"filePath":"datafiles",},
   ],
   "MetaData": {
