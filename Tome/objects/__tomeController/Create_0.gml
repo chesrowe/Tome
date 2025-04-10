@@ -1,3 +1,5 @@
+
+slugs = []
 requestCallbacks = [];
 requestsCompleted = 0;
 
