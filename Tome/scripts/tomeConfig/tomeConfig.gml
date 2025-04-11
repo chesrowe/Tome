@@ -25,7 +25,7 @@
 #macro TOME_EXTERNAL_TOKEN_PATH ""
 
 // Instead of pushing files directly to Github, instead copy them to a local directory to be pushed manually 
-#macro TOME_LOCAL_REPO_MODE true
+#macro TOME_LOCAL_REPO_MODE false
 
-#macro TOME_LOCAL_REPO_PATH "E:/Github/CataSite/Tome-Docs/"
+#macro TOME_LOCAL_REPO_PATH ""
 

@@ -4,7 +4,6 @@
 
 /// @func tome_add_script(script, slugs)
 /// @desc adds a script to be parsed as a page to your site
-/// @slug docs-add-script
 /// @param {string} scriptName The name off the script to add
 /// @param {string} slugs The name of any notes that will be used for adding slugs.
 function tome_add_script(_scriptName){
