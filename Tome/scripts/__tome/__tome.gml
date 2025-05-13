@@ -3,17 +3,25 @@
 /// @text Below are the functions you'll use to set up your docs and generate them. 
 
 /// @func tome_add_script(script, slugs)
-/// @desc adds a script to be parsed as a page to your site
+/// @desc Adds a script to be parsed as a page to your site
 /// @param {string} scriptName The name off the script to add
 /// @param {string} slugs The name of any notes that will be used for adding slugs.
 function tome_add_script(_scriptName){
 	var _filePath = __tome_file_project_get_directory() + string("scripts/{0}/{0}.gml", _scriptName);
+	
+	if (!file_exists(_filePath)){
+		__tomeTrace(string("tome_add_script: The given script doesn't seem to exist: {0}", _scriptName));
+		exit;
+	}
+	
+	__tomeTrace(string("tome_add_script: File exists: {0}", _scriptName), true);
 	array_push(global.__tomeFileArray, _filePath);
 	
 	for (var i = 1; i < argument_count; i++){
 		_filePath = __tome_file_project_get_directory() + string("notes/{0}/{0}.txt", argument[i]);
 		array_push(global.__tomeSlugArray, _filePath);		
 	}
+	
 }
 
 /// @text ?> When using `tome_add_note()`, only the tags @title and @category are parsed. The rest of the text is displayed as-is.
@@ -24,6 +32,12 @@ function tome_add_script(_scriptName){
 /// @param {string} slugs The name of any notes that will be used for adding slugs.
 function tome_add_note(_noteName){
 	var _filePath = __tome_file_project_get_directory() + string("notes/{0}/{0}.txt", _noteName, _noteName);
+	
+	if (!file_exists(_filePath)){
+		__tomeTrace(string("tome_add_note: The given note doesn't seem to exist: {0}", _noteName));
+		exit;
+	}
+	
 	array_push(global.__tomeFileArray, _filePath);
 	
 	for (var i = 1; i < argument_count; i++){
@@ -38,13 +52,23 @@ function tome_add_note(_noteName){
 /// @desc adds a file to be parsed when the docs are generated
 /// @param {string} filePath The file to add
 function tome_add_file(_filePath){
+	if (!file_exists(_filePath)){
+		__tomeTrace(string("tome_add_file: The given file doesn't seem to exist: {0}", _filePath));
+		exit;
+	}
+	
 	array_push(global.__tomeFileArray, _filePath);
 }
 
 /// @func tome_set_homepage_from_file(filePath)
 /// @desc Sets the homepage of your site to be the contents of a file (.txt, or .md)
 /// @param {string} filePath The file to use as the homepage
-function tome_set_homepage_from_file(_filePath){
+function tome_set_homepage_from_file(_filePath){	
+	if (!file_exists(_filePath)){
+		__tomeTrace(string("tome_set_homepage_from_file: The given file doesn't seem to exist: {0}", _filePath));
+		exit;
+	}
+	
 	var _homePageParseStruct = __tome_parse_markdown(_filePath);
 	global.__tomeHomepage = _homePageParseStruct.markdown;
 }
@@ -52,8 +76,15 @@ function tome_set_homepage_from_file(_filePath){
 /// @func tome_set_homepage_from_note(noteName)
 /// @desc sets the homepage of your site to be the contents of the note
 /// @param {string} noteName The note to use as the homepage
-function tome_set_homepage_from_note(_noteName){
-	var _homePageParseStruct = __tome_parse_markdown(__tome_file_project_get_directory() + string("notes/{0}/{0}.txt", _noteName, _noteName));
+function tome_set_homepage_from_note(_noteName){	
+	var _filePath = __tome_file_project_get_directory() + string("notes/{0}/{0}.txt", _noteName, _noteName);
+	
+	if (!file_exists(_filePath)){
+		__tomeTrace(string("tome_set_homepage_from_note: The given note doesn't seem to exist: {0}", _filePath));
+		exit;
+	}
+	
+	var _homePageParseStruct = __tome_parse_markdown(_filePath);
 	global.__tomeHomepage = _homePageParseStruct.markdown;
 }
 
@@ -68,6 +99,7 @@ function tome_add_to_sidebar(_name, _link, _category){
 		link: _link,
 		category: _category
 	}
+	
 	array_push(global.__tomeAdditionalSidebarItemsArray, _sidebarItem);
 }
 
@@ -119,6 +151,7 @@ function tome_add_navbar_link(_name, _link){
 		name: _name,
 		link: _link
 	}
+	
 	array_push(global.__tomeNavbarItemsArray, _navbarItem);
 }
 

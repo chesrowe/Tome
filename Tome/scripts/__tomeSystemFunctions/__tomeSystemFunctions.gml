@@ -766,7 +766,7 @@ function __tome_parse_markdown(_filePath){
 #region __tome_parse_markdown_slugs(_filePath)
 /// @desc Parses a markdown file and returns a struct containing the markdown text, title, and category. Unlike the script parser, this function only parses the tags @title and @category, all other text is just added to the markdown.
 /// @param {string} _filePath The path to the file
-/// @returns {null}
+/// @returns {undefined}
 function __tome_parse_markdown_slugs(_filePath){
 	var _file = file_text_open_read(_filePath);
 	var _inSlug = false;
